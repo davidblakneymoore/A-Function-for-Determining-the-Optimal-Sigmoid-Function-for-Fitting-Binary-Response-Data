@@ -123,7 +123,7 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
     
   # Generating a Logistic Function Model
   
-  # Response ~ (1 / (1 + exp(-(Intercept + (Slope * Predictor)))))
+  # Response = (1 / (1 + exp(-(Intercept + (Slope * Predictor)))))
   
   Logistic_Function_Model_Name <- "Logistic Function"
   Lowercase_Logistic_Function_Model_Name <- "logistic function"
@@ -159,7 +159,7 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   
   # Generating a Hyperbolic Tangent Model
   
-  # Response ~ ((0.5 * tanh(Intercept + (Slope * Predictor))) + 0.5)
+  # Response = ((0.5 * tanh(Intercept + (Slope * Predictor))) + 0.5)
   
   Hyperbolic_Tangent_Model_Name <- "Hyperbolic Tangent"
   Lowercase_Hyperbolic_Tangent_Model_Name <- "hyperbolic tangent"
@@ -195,7 +195,7 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   
   # Generating an Arctangent Function Model
   
-  # Response ~ ((0.5 * ((2 / pi) * atan((pi / 2) * (Intercept + (Slope * Predictor))))) + 0.5)
+  # Response = ((0.5 * ((2 / pi) * atan((pi / 2) * (Intercept + (Slope * Predictor))))) + 0.5)
   
   Arctangent_Function_Model_Name <- "Arctangent Function"
   Lowercase_Arctangent_Function_Model_Name <- "arctangent function"
@@ -232,7 +232,7 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   
   # Generating a Gudermannian Function Model
   
-  # Response ~ ((2 / pi) * atan(tanh((Intercept + (Slope * Predictor)) * pi / 4)) + 0.5)
+  # Response = ((2 / pi) * atan(tanh((Intercept + (Slope * Predictor)) * pi / 4)) + 0.5)
   
   Gudermannian_Function_Model_Name <- "Gudermannian Function"
   Lowercase_Gudermannian_Function_Model_Name <- "Gudermannian function"
@@ -274,7 +274,7 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   
   # Generating a Generalised Logistic Function Model
   
-  # Response ~ ((1 + exp(-(Intercept + (Slope * Predictor)))) ^ (-Exponent))
+  # Response = ((1 + exp(-(Intercept + (Slope * Predictor)))) ^ (-Exponent))
   
   Generalised_Logistic_Function_Model_Name <- "Generalised Logistic Function"
   Lowercase_Generalised_Logistic_Function_Model_Name <- "generalised logistic function"
@@ -316,7 +316,7 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   
   # Generating an Algebraic Function Model
   
-  # Response ~ ((0.5 * ((Intercept + (Slope * Predictor)) / sqrt(1 + ((Intercept + (Slope * Predictor)) ^ 2)))) + 0.5)
+  # Response = ((0.5 * ((Intercept + (Slope * Predictor)) / sqrt(1 + ((Intercept + (Slope * Predictor)) ^ 2)))) + 0.5)
   
   Algebraic_Function_Model_Name <- "Algebraic Function"
   Lowercase_Algebraic_Function_Model_Name <- "algebraic function"
@@ -352,7 +352,7 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   
   # Generating a More General Algebraic Function Model
   
-  # Response ~ ((0.5 * ((Intercept + (Slope * Predictor)) / ((1 + (abs(Intercept + (Slope * Predictor)) ^ Exponent)) ^ (1 / Exponent)))) + 0.5)
+  # Response = ((0.5 * ((Intercept + (Slope * Predictor)) / ((1 + (abs(Intercept + (Slope * Predictor)) ^ Exponent)) ^ (1 / Exponent)))) + 0.5)
   
   A_More_General_Algebraic_Function_Model_Name <- "A More General Algebraic Function"
   Lowercase_A_More_General_Algebraic_Function_Model_Name <- "a more general algebraic function"
