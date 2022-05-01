@@ -1,0 +1,1 @@
+# A-Function-for-Determining-the-Optimal-Sigmoid-Function-for-Fitting-Binary-Response-Data
