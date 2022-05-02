@@ -62,7 +62,7 @@
 # initial iterations are discarded and parameter estimates stabilize properly.
 
 # 'Number_of_Chains = 3' is the number of separate Markov chain Monte Carlo
-# iterations that will be run. The default, '3', is common, and fewer than 3 is
+# simulations that will be run. The default, '3', is common, and fewer than 3 is
 # not recommended.
 
 # 'Working_Directory = getwd()' is the working directory in which to save the
