@@ -26,6 +26,6 @@ This function takes 8 arguments. The first two are required.
 
 `Working_Directory = getwd()` is the working directory in which to save the .txt files used by the `R2jags::jags()` function.
 
-# Works Cited
+<b>Works Cited</b>
 
 Su, Y.-S., and M. Yajima. 2021. R2jags: Using R to Run 'JAGS'. R package version 0.7-1. https://cran.r-project.org/web/packages/R2jags/.
