@@ -18,8 +18,7 @@
 # function, an algebraic function, and a more general algebraic function. All
 # of these models have been rescaled so that they are bounded by 0 and 1 on the
 # response variable axis. When I get better at coding, I'd like to add the
-# error function, the smoothstep function, and the inverse probit model into
-# the mix.
+# error function and the smoothstep function into the mix.
 
 # This function uses the 'R2jags' package heavily and it returns all the
 # pertinent information for each model. For each model, it returns the model
@@ -385,11 +384,6 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   A_More_General_Algebraic_Function_Model <- paste0(Response_Name, " = ((0.5 * ((", as.numeric(A_More_General_Algebraic_Function_Model_Output$BUGSoutput$mean$Intercept), " + (", as.numeric(A_More_General_Algebraic_Function_Model_Output$BUGSoutput$mean$Slope), " * ", Predictor_Name, ")) / ((1 + (abs(", as.numeric(A_More_General_Algebraic_Function_Model_Output$BUGSoutput$mean$Intercept), " + (", as.numeric(A_More_General_Algebraic_Function_Model_Output$BUGSoutput$mean$Slope), " * ", Predictor_Name, ")) ^ ", as.numeric(A_More_General_Algebraic_Function_Model_Output$BUGSoutput$mean$Exponent), ")) ^ (1 / ", as.numeric(A_More_General_Algebraic_Function_Model_Output$BUGSoutput$mean$Exponent), ")))) + 0.5)")
   A_More_General_Algebraic_Function_Model_Bayesian_p_Value <- as.numeric(A_More_General_Algebraic_Function_Model_Output$BUGSoutput$mean$Bayesian_p_Value)
   A_More_General_Algebraic_Function_Model_Information <- list(Model_Name = A_More_General_Algebraic_Function_Model_Name, Lowercase_Model_Name = Lowercase_A_More_General_Algebraic_Function_Model_Name, Model = A_More_General_Algebraic_Function_Model, Sum_of_Squared_Residuals = A_More_General_Algebraic_Function_Model_Sum_of_Squared_Residuals, Fitted_Response_Values = Fitted_A_More_General_Algebraic_Function_Model_Response_Values, Output = A_More_General_Algebraic_Function_Model_Output, Bayesian_p_Value = A_More_General_Algebraic_Function_Model_Bayesian_p_Value)
-  
-  
-  # Generating an Inverse Probit Model
-  
-  # I don't know how to code this function yet.
   
   
   # Compiling the Models Into One List
