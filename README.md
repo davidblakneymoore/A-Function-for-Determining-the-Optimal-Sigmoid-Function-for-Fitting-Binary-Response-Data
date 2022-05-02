@@ -25,3 +25,7 @@ This function takes 8 arguments. The first two are required.
 `Number_of_Chains = 3` is the number of separate Markov chain Monte Carlo iterations that will be run. The default, `3`, is common, and fewer than 3 is not recommended.
 
 `Working_Directory = getwd()` is the working directory in which to save the .txt files used by the `R2jags::jags()` function.
+
+# Works Cited
+
+Su, Y.-S., and M. Yajima. 2021. R2jags: Using R to Run 'JAGS'. R package version 0.7-1. https://cran.r-project.org/web/packages/R2jags/.
