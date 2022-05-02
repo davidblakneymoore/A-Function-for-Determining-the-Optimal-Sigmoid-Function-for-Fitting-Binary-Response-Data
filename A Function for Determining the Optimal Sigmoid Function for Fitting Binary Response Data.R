@@ -449,7 +449,7 @@ Data_Frame <- data.frame(Predictor_Variable = Predictor_Variable, Response_Varia
 
 Color <- 2:(length(Function_Output$Model_Information) + 1)
 par(mar = c(12, 4, 4, 2))
-plot(Response_Variable ~ Predictor_Variable, Data_Frame, main = "Fitting the Best Sigmoid Model\nto the Data", xlab = "", ylab = "")
+plot(Response_Variable ~ Predictor_Variable, Data_Frame, main = "Fitting Sigmoid Models to the Data", xlab = "", ylab = "")
 title(xlab = "Predictor Variable", line = 2.5)
 title(ylab = "Response Variable", line = 2.5)
 for (i in seq_len(length(Function_Output$Model_Information))) {
