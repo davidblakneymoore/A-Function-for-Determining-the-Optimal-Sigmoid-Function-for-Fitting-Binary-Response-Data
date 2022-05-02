@@ -11,14 +11,13 @@
 
 # Though logistic regression is almost exclusively used for modeling
 # probabilities based on binary response data, there are many other options.
-# This function fits seven separate models to binary response data and
-# determines which of the seven are best based on the sum of squared residuals.
-# The seven model types are the logistic function, the hyperbolic tangent, the
-# arctangent function, the Gudermannian function, a generalised logistic
-# function, an algebraic function, and a more general algebraic function. All
-# of these models have been rescaled so that they are bounded by 0 and 1 on the
-# response variable axis. When I get better at coding, I'd like to add the
-# error function and the smoothstep function into the mix.
+# This function fits eight separate models to binary response data and
+# determines which of the eight are best based on the sum of squared residuals.
+# The eight model types are based on the logistic function, the hyperbolic
+# tangent, the arctangent function, the Gudermannian function, the error
+# function, a generalised logistic function, an algebraic function, and a more
+# general algebraic function. All eight of these functions have been rescaled
+# so that they are bounded by 0 and 1 on the response variable axis.
 
 # This function uses the 'R2jags' package heavily and it returns all the
 # pertinent information for each model. For each model, it returns the model
@@ -122,7 +121,7 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
     
   # Generating a Logistic Function Model
   
-  # Response = (1 / (1 + exp(-(Intercept + (Slope * Predictor)))))
+  # Response ~ (1 / (1 + exp(-(Intercept + (Slope * Predictor)))))
   
   Logistic_Function_Model_Name <- "Logistic Function"
   Lowercase_Logistic_Function_Model_Name <- "logistic function"
@@ -158,7 +157,7 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   
   # Generating a Hyperbolic Tangent Model
   
-  # Response = ((0.5 * tanh(Intercept + (Slope * Predictor))) + 0.5)
+  # Response ~ ((0.5 * tanh(Intercept + (Slope * Predictor))) + 0.5)
   
   Hyperbolic_Tangent_Model_Name <- "Hyperbolic Tangent"
   Lowercase_Hyperbolic_Tangent_Model_Name <- "hyperbolic tangent"
@@ -194,7 +193,7 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   
   # Generating an Arctangent Function Model
   
-  # Response = ((0.5 * ((2 / pi) * atan((pi / 2) * (Intercept + (Slope * Predictor))))) + 0.5)
+  # Response ~ ((0.5 * ((2 / pi) * atan((pi / 2) * (Intercept + (Slope * Predictor))))) + 0.5)
   
   Arctangent_Function_Model_Name <- "Arctangent Function"
   Lowercase_Arctangent_Function_Model_Name <- "arctangent function"
@@ -231,7 +230,7 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   
   # Generating a Gudermannian Function Model
   
-  # Response = ((2 / pi) * atan(tanh((Intercept + (Slope * Predictor)) * pi / 4)) + 0.5)
+  # Response ~ ((2 / pi) * atan(tanh((Intercept + (Slope * Predictor)) * pi / 4)) + 0.5)
   
   Gudermannian_Function_Model_Name <- "Gudermannian Function"
   Lowercase_Gudermannian_Function_Model_Name <- "Gudermannian function"
@@ -268,12 +267,42 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   
   # Generating an Error Function Model
   
-  # I don't know how to code this function.
+  Error_Function_Model_Name <- "Error Function"
+  Lowercase_Error_Function_Model_Name <- "error function"
+  sink("Error Function Model.txt")
+  cat("model {
+    
+    # Priors
+    Intercept ~ dnorm(0, 0.001)
+    Slope ~ dnorm(0, 0.001)
+    Sigma ~ dlnorm(0, 1)
+    Tau <- (1 / (Sigma ^ 2))
+    pi <- 3.14159265359
+    
+    # Likelihood and Model Fit
+    for (i in 1:Number_of_Observations) {
+      Response[i] ~ dnorm(Mean[i], Tau)
+      Mean[i] <- ((0.5 * ((2 * pnorm((Intercept + (Slope * Predictor[i])) * sqrt(2), 0, 1)) - 1)) + 0.5)
+      Actual_Squared_Residual[i] <- ((Response[i] - Mean[i]) ^ 2)
+      Simulated_Response[i] ~ dbern(Mean[i])
+      Simulated_Squared_Residual[i] <- ((Simulated_Response[i] - Mean[i]) ^ 2)
+    }
+    Bayesian_p_Value <- step((sum((Simulated_Squared_Residual[]) ^ 2)) / (sum((Actual_Squared_Residual[]) ^ 2)) - 1) 
+    
+  }", fill = T)
+  sink()
+  Parameters <- c("Intercept", "Slope", "Bayesian_p_Value")
+  Error_Function_Model_Output <- R2jags::jags(Data, Initial_Values, Parameters, "Error Function Model.txt", n.chains = Number_of_Chains, n.thin = Thinning_Rate, n.iter = Number_of_Iterations, n.burnin = Burn_in_Value, working.directory = Working_Directory)
+  Fitted_Error_Function_Model_Response_Values <- ((0.5 * ((2 * pnorm((as.numeric(Error_Function_Model_Output$BUGSoutput$mean$Intercept) + (as.numeric(Error_Function_Model_Output$BUGSoutput$mean$Slope) * Fitted_Predictor_Values)) * sqrt(2))) - 1)) + 0.5)
+  Error_Function_Model_Sum_of_Squared_Residuals <- sum((Response - ((0.5 * ((2 * pnorm((as.numeric(Error_Function_Model_Output$BUGSoutput$mean$Intercept) + (as.numeric(Error_Function_Model_Output$BUGSoutput$mean$Slope) * Predictor)) * sqrt(2))) - 1)) + 0.5)) ^ 2)
+  Error_Function_Model <- paste0(Response_Name, " = ((0.5 * ((2 * pnorm((", as.numeric(Error_Function_Model_Output$BUGSoutput$mean$Intercept)," + (", as.numeric(Error_Function_Model_Output$BUGSoutput$mean$Slope), " * ", Predictor_Name, ")) * sqrt(2))) - 1)) + 0.5)")
+  Error_Function_Model_Bayesian_p_Value <- as.numeric(Error_Function_Model_Output$BUGSoutput$mean$Bayesian_p_Value)
+  Error_Function_Model_Information <- list(Model_Name = Error_Function_Model_Name, Lowercase_Model_Name = Lowercase_Error_Function_Model_Name, Model = Error_Function_Model, Sum_of_Squared_Residuals = Error_Function_Model_Sum_of_Squared_Residuals, Fitted_Response_Values = Fitted_Error_Function_Model_Response_Values, Output = Error_Function_Model_Output, Bayesian_p_Value = Error_Function_Model_Bayesian_p_Value)
   
   
   # Generating a Generalised Logistic Function Model
   
-  # Response = ((1 + exp(-(Intercept + (Slope * Predictor)))) ^ (-Exponent))
+  # Response ~ ((1 + exp(-(Intercept + (Slope * Predictor)))) ^ (-Exponent))
   
   Generalised_Logistic_Function_Model_Name <- "Generalised Logistic Function"
   Lowercase_Generalised_Logistic_Function_Model_Name <- "generalised logistic function"
@@ -315,7 +344,7 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   
   # Generating an Algebraic Function Model
   
-  # Response = ((0.5 * ((Intercept + (Slope * Predictor)) / sqrt(1 + ((Intercept + (Slope * Predictor)) ^ 2)))) + 0.5)
+  # Response ~ ((0.5 * ((Intercept + (Slope * Predictor)) / sqrt(1 + ((Intercept + (Slope * Predictor)) ^ 2)))) + 0.5)
   
   Algebraic_Function_Model_Name <- "Algebraic Function"
   Lowercase_Algebraic_Function_Model_Name <- "algebraic function"
@@ -351,7 +380,7 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   
   # Generating a More General Algebraic Function Model
   
-  # Response = ((0.5 * ((Intercept + (Slope * Predictor)) / ((1 + (abs(Intercept + (Slope * Predictor)) ^ Exponent)) ^ (1 / Exponent)))) + 0.5)
+  # Response ~ ((0.5 * ((Intercept + (Slope * Predictor)) / ((1 + (abs(Intercept + (Slope * Predictor)) ^ Exponent)) ^ (1 / Exponent)))) + 0.5)
   
   A_More_General_Algebraic_Function_Model_Name <- "A More General Algebraic Function"
   Lowercase_A_More_General_Algebraic_Function_Model_Name <- "a more general algebraic function"
@@ -388,7 +417,7 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   
   # Compiling the Models Into One List
   
-  Model_List <- list(Logistic_Function_Model = Logistic_Function_Model_Information, Hyperbolic_Tangent_Model = Hyperbolic_Tangent_Model_Information, Arctangent_Function_Model = Arctangent_Function_Model_Information, Gudermannian_Function_Model = Gudermannian_Function_Model_Information, Generalised_Logistic_Function_Model = Generalised_Logistic_Function_Model_Information, Algebraic_Function_Model = Algebraic_Function_Model_Information, A_More_General_Algebraic_Function_Model = A_More_General_Algebraic_Function_Model_Information)
+  Model_List <- list(Logistic_Function_Model = Logistic_Function_Model_Information, Hyperbolic_Tangent_Model = Hyperbolic_Tangent_Model_Information, Arctangent_Function_Model = Arctangent_Function_Model_Information, Gudermannian_Function_Model = Gudermannian_Function_Model_Information, Error_Function_Model_Information = Error_Function_Model_Information, Generalised_Logistic_Function_Model = Generalised_Logistic_Function_Model_Information, Algebraic_Function_Model = Algebraic_Function_Model_Information, A_More_General_Algebraic_Function_Model = A_More_General_Algebraic_Function_Model_Information)
   
   
   # Returning the Pertinent Model Information
