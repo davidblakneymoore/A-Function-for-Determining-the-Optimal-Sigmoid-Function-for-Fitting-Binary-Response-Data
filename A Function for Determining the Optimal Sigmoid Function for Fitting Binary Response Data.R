@@ -17,12 +17,12 @@
 # tangent, the arctangent function, the Gudermannian function, the error
 # function, a generalised logistic function, an algebraic function, a more
 # general algebraic function, the Gompertz function, and the Gompertz function
-# after it has been reflected about the vertical axis. All ten of these
-# functions have been rescaled so that they are bounded by 0 and 1 on the
-# response variable axis. Please note that the Gompertz function and the
-# reflected Gompertz function are the only functions out of the ten that are
-# not radially symmetric about their inflection points - one side of these
-# functions approaches the asymptote more gradually than the other.
+# after it has been rotated by 180 degrees. All ten of these functions have
+# been rescaled so that they are bounded by 0 and 1 on the response variable
+# axis. Please note that the Gompertz function and the rotated Gompertz
+# function are the only functions out of the ten that are not radially
+# symmetric about their inflection points - one side of these functions
+# approaches the asymptote more gradually than the other.
 
 # This function uses the 'R2jags' package heavily and it returns all the
 # pertinent information for each model. For each model, it returns the model
@@ -453,14 +453,13 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   Gompertz_Function_Model_Information <- list(Model_Name = Gompertz_Function_Model_Name, Lowercase_Model_Name = Lowercase_Gompertz_Function_Model_Name, Model = Gompertz_Function_Model, Residual_Sum_of_Squares = Gompertz_Function_Model_Residual_Sum_of_Squares, Fitted_Response_Values = Fitted_Gompertz_Function_Model_Response_Values, Output = Gompertz_Function_Model_Output, Bayesian_p_Value = Gompertz_Function_Model_Bayesian_p_Value)
   
   
-  # Generating a Gompertz Function Model That Has Been Reflected About the
-  # Vertical Axis
+  # Generating a Gompertz Function Model That Has Been Rotated by 180 Degrees
   
   # Response = (1 - (exp(-exp(Intercept + (Slope * Predictor)))))
   
-  Reflected_Gompertz_Function_Model_Name <- "Reflected Gompertz Function"
-  Lowercase_Reflected_Gompertz_Function_Model_Name <- "reflected Gompertz function"
-  sink("Reflected Gompertz Function Model.txt")
+  Rotated_Gompertz_Function_Model_Name <- "Rotated Gompertz Function"
+  Lowercase_Rotated_Gompertz_Function_Model_Name <- "rotated Gompertz function"
+  sink("Rotated Gompertz Function Model.txt")
   cat("model {
     
     # Priors
@@ -482,17 +481,17 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   }", fill = T)
   sink()
   Parameters <- c("Intercept", "Slope", "Bayesian_p_Value")
-  Reflected_Gompertz_Function_Model_Output <- R2jags::jags(Data, Initial_Values, Parameters, "Reflected Gompertz Function Model.txt", n.chains = Number_of_Chains, n.thin = Thinning_Rate, n.iter = Number_of_Iterations, n.burnin = Burn_in_Value, working.directory = Working_Directory)
-  Fitted_Reflected_Gompertz_Function_Model_Response_Values <- (1 - (exp(-exp(as.numeric(Reflected_Gompertz_Function_Model_Output$BUGSoutput$mean$Intercept) + (as.numeric(Reflected_Gompertz_Function_Model_Output$BUGSoutput$mean$Slope) * Fitted_Predictor_Values)))))
-  Reflected_Gompertz_Function_Model_Residual_Sum_of_Squares <- sum((Response - (1 - (exp(-exp(as.numeric(Reflected_Gompertz_Function_Model_Output$BUGSoutput$mean$Intercept) + (as.numeric(Reflected_Gompertz_Function_Model_Output$BUGSoutput$mean$Slope) * Predictor)))))) ^ 2)
-  Reflected_Gompertz_Function_Model <- paste0(Response_Name, " = (1 - (exp(-exp(", as.numeric(Reflected_Gompertz_Function_Model_Output$BUGSoutput$mean$Intercept), " + (", as.numeric(Reflected_Gompertz_Function_Model_Output$BUGSoutput$mean$Slope), " * ", Predictor_Name, ")))))")
-  Reflected_Gompertz_Function_Model_Bayesian_p_Value <- as.numeric(Reflected_Gompertz_Function_Model_Output$BUGSoutput$mean$Bayesian_p_Value)
-  Reflected_Gompertz_Function_Model_Information <- list(Model_Name = Reflected_Gompertz_Function_Model_Name, Lowercase_Model_Name = Lowercase_Reflected_Gompertz_Function_Model_Name, Model = Reflected_Gompertz_Function_Model, Residual_Sum_of_Squares = Reflected_Gompertz_Function_Model_Residual_Sum_of_Squares, Fitted_Response_Values = Fitted_Reflected_Gompertz_Function_Model_Response_Values, Output = Reflected_Gompertz_Function_Model_Output, Bayesian_p_Value = Reflected_Gompertz_Function_Model_Bayesian_p_Value)
+  Rotated_Gompertz_Function_Model_Output <- R2jags::jags(Data, Initial_Values, Parameters, "Rotated Gompertz Function Model.txt", n.chains = Number_of_Chains, n.thin = Thinning_Rate, n.iter = Number_of_Iterations, n.burnin = Burn_in_Value, working.directory = Working_Directory)
+  Fitted_Rotated_Gompertz_Function_Model_Response_Values <- (1 - (exp(-exp(as.numeric(Rotated_Gompertz_Function_Model_Output$BUGSoutput$mean$Intercept) + (as.numeric(Rotated_Gompertz_Function_Model_Output$BUGSoutput$mean$Slope) * Fitted_Predictor_Values)))))
+  Rotated_Gompertz_Function_Model_Residual_Sum_of_Squares <- sum((Response - (1 - (exp(-exp(as.numeric(Rotated_Gompertz_Function_Model_Output$BUGSoutput$mean$Intercept) + (as.numeric(Rotated_Gompertz_Function_Model_Output$BUGSoutput$mean$Slope) * Predictor)))))) ^ 2)
+  Rotated_Gompertz_Function_Model <- paste0(Response_Name, " = (1 - (exp(-exp(", as.numeric(Rotated_Gompertz_Function_Model_Output$BUGSoutput$mean$Intercept), " + (", as.numeric(Rotated_Gompertz_Function_Model_Output$BUGSoutput$mean$Slope), " * ", Predictor_Name, ")))))")
+  Rotated_Gompertz_Function_Model_Bayesian_p_Value <- as.numeric(Rotated_Gompertz_Function_Model_Output$BUGSoutput$mean$Bayesian_p_Value)
+  Rotated_Gompertz_Function_Model_Information <- list(Model_Name = Rotated_Gompertz_Function_Model_Name, Lowercase_Model_Name = Lowercase_Rotated_Gompertz_Function_Model_Name, Model = Rotated_Gompertz_Function_Model, Residual_Sum_of_Squares = Rotated_Gompertz_Function_Model_Residual_Sum_of_Squares, Fitted_Response_Values = Fitted_Rotated_Gompertz_Function_Model_Response_Values, Output = Rotated_Gompertz_Function_Model_Output, Bayesian_p_Value = Rotated_Gompertz_Function_Model_Bayesian_p_Value)
   
   
   # Compiling the Models Into One List
   
-  Model_List <- list(Logistic_Function_Model = Logistic_Function_Model_Information, Hyperbolic_Tangent_Model = Hyperbolic_Tangent_Model_Information, Arctangent_Function_Model = Arctangent_Function_Model_Information, Gudermannian_Function_Model = Gudermannian_Function_Model_Information, Error_Function_Model_Information = Error_Function_Model_Information, Generalised_Logistic_Function_Model = Generalised_Logistic_Function_Model_Information, Algebraic_Function_Model = Algebraic_Function_Model_Information, A_More_General_Algebraic_Function_Model = A_More_General_Algebraic_Function_Model_Information, Gompertz_Function_Model = Gompertz_Function_Model_Information, Reflected_Gompertz_Function_Model = Reflected_Gompertz_Function_Model_Information)
+  Model_List <- list(Logistic_Function_Model = Logistic_Function_Model_Information, Hyperbolic_Tangent_Model = Hyperbolic_Tangent_Model_Information, Arctangent_Function_Model = Arctangent_Function_Model_Information, Gudermannian_Function_Model = Gudermannian_Function_Model_Information, Error_Function_Model_Information = Error_Function_Model_Information, Generalised_Logistic_Function_Model = Generalised_Logistic_Function_Model_Information, Algebraic_Function_Model = Algebraic_Function_Model_Information, A_More_General_Algebraic_Function_Model = A_More_General_Algebraic_Function_Model_Information, Gompertz_Function_Model = Gompertz_Function_Model_Information, Rotated_Gompertz_Function_Model = Rotated_Gompertz_Function_Model_Information)
   
   
   # Returning the Pertinent Model Information
