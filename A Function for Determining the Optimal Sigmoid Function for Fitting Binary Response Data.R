@@ -11,13 +11,17 @@
 
 # Though logistic regression is almost exclusively used for modeling
 # probabilities based on binary response data, there are many other options.
-# This function fits eight separate models to binary response data and
-# determines which of the eight are best based on the sum of squared residuals.
-# The eight model types are based on the logistic function, the hyperbolic
+# This function fits nine separate models to binary response data and
+# determines which of the nine are best based on the sum of squared residuals.
+# The nine model types are based on the logistic function, the hyperbolic
 # tangent, the arctangent function, the Gudermannian function, the error
-# function, a generalised logistic function, an algebraic function, and a more
-# general algebraic function. All eight of these functions have been rescaled
-# so that they are bounded by 0 and 1 on the response variable axis.
+# function, a generalised logistic function, an algebraic function, a more
+# general algebraic function, and the Gompertz function. All nine of these
+# functions have been rescaled so that they are bounded by 0 and 1 on the
+# response variable axis. Please note that the Gompertz function is the only
+# function out of the nine that is not radially symmetric about its inflection
+# point - one side of the function approaches the asymptote more gradually than
+# the other.
 
 # This function uses the 'R2jags' package heavily and it returns all the
 # pertinent information for each model. For each model, it returns the model
@@ -62,7 +66,7 @@
 # initial iterations are discarded and parameter estimates stabilize properly.
 
 # 'Number_of_Chains = 3' is the number of separate Markov chain Monte Carlo
-# simulations that will be run. The default, '3', is common, and fewer than 3 is
+# iterations that will be run. The default, '3', is common, and fewer than 3 is
 # not recommended.
 
 # 'Working_Directory = getwd()' is the working directory in which to save the
@@ -121,7 +125,7 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
     
   # Generating a Logistic Function Model
   
-  # Response = (1 / (1 + exp(-(Intercept + (Slope * Predictor)))))
+  # Response ~ (1 / (1 + exp(-(Intercept + (Slope * Predictor)))))
   
   Logistic_Function_Model_Name <- "Logistic Function"
   Lowercase_Logistic_Function_Model_Name <- "logistic function"
@@ -157,7 +161,7 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   
   # Generating a Hyperbolic Tangent Model
   
-  # Response = ((0.5 * tanh(Intercept + (Slope * Predictor))) + 0.5)
+  # Response ~ ((0.5 * tanh(Intercept + (Slope * Predictor))) + 0.5)
   
   Hyperbolic_Tangent_Model_Name <- "Hyperbolic Tangent"
   Lowercase_Hyperbolic_Tangent_Model_Name <- "hyperbolic tangent"
@@ -193,7 +197,7 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   
   # Generating an Arctangent Function Model
   
-  # Response = ((0.5 * ((2 / pi) * atan((pi / 2) * (Intercept + (Slope * Predictor))))) + 0.5)
+  # Response ~ ((0.5 * ((2 / pi) * atan((pi / 2) * (Intercept + (Slope * Predictor))))) + 0.5)
   
   Arctangent_Function_Model_Name <- "Arctangent Function"
   Lowercase_Arctangent_Function_Model_Name <- "arctangent function"
@@ -230,7 +234,7 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   
   # Generating a Gudermannian Function Model
   
-  # Response = ((2 / pi) * atan(tanh((Intercept + (Slope * Predictor)) * pi / 4)) + 0.5)
+  # Response ~ ((2 / pi) * atan(tanh((Intercept + (Slope * Predictor)) * pi / 4)) + 0.5)
   
   Gudermannian_Function_Model_Name <- "Gudermannian Function"
   Lowercase_Gudermannian_Function_Model_Name <- "Gudermannian function"
@@ -267,8 +271,6 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   
   # Generating an Error Function Model
   
-  # Response = ((0.5 * ((2 * pnorm((Intercept + (Slope * Predictor)) * sqrt(2), 0, 1)) - 1)) + 0.5)
-  
   Error_Function_Model_Name <- "Error Function"
   Lowercase_Error_Function_Model_Name <- "error function"
   sink("Error Function Model.txt")
@@ -304,7 +306,7 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   
   # Generating a Generalised Logistic Function Model
   
-  # Response = ((1 + exp(-(Intercept + (Slope * Predictor)))) ^ (-Exponent))
+  # Response ~ ((1 + exp(-(Intercept + (Slope * Predictor)))) ^ (-Exponent))
   
   Generalised_Logistic_Function_Model_Name <- "Generalised Logistic Function"
   Lowercase_Generalised_Logistic_Function_Model_Name <- "generalised logistic function"
@@ -339,9 +341,14 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   Generalised_Logistic_Function_Model_Information <- list(Model_Name = Generalised_Logistic_Function_Model_Name, Lowercase_Model_Name = Lowercase_Generalised_Logistic_Function_Model_Name, Model = Generalised_Logistic_Function_Model, Sum_of_Squared_Residuals = Generalised_Logistic_Function_Model_Sum_of_Squared_Residuals, Fitted_Response_Values = Fitted_Generalised_Logistic_Function_Model_Response_Values, Output = Generalised_Logistic_Function_Model_Output, Bayesian_p_Value = Generalised_Logistic_Function_Model_Bayesian_p_Value)
   
   
+  # Generating a Smoothstep Function Model
+  
+  # I don't know how to code this function yet.
+  
+  
   # Generating an Algebraic Function Model
   
-  # Response = ((0.5 * ((Intercept + (Slope * Predictor)) / sqrt(1 + ((Intercept + (Slope * Predictor)) ^ 2)))) + 0.5)
+  # Response ~ ((0.5 * ((Intercept + (Slope * Predictor)) / sqrt(1 + ((Intercept + (Slope * Predictor)) ^ 2)))) + 0.5)
   
   Algebraic_Function_Model_Name <- "Algebraic Function"
   Lowercase_Algebraic_Function_Model_Name <- "algebraic function"
@@ -377,7 +384,7 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   
   # Generating a More General Algebraic Function Model
   
-  # Response = ((0.5 * ((Intercept + (Slope * Predictor)) / ((1 + (abs(Intercept + (Slope * Predictor)) ^ Exponent)) ^ (1 / Exponent)))) + 0.5)
+  # Response ~ ((0.5 * ((Intercept + (Slope * Predictor)) / ((1 + (abs(Intercept + (Slope * Predictor)) ^ Exponent)) ^ (1 / Exponent)))) + 0.5)
   
   A_More_General_Algebraic_Function_Model_Name <- "A More General Algebraic Function"
   Lowercase_A_More_General_Algebraic_Function_Model_Name <- "a more general algebraic function"
@@ -412,9 +419,41 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   A_More_General_Algebraic_Function_Model_Information <- list(Model_Name = A_More_General_Algebraic_Function_Model_Name, Lowercase_Model_Name = Lowercase_A_More_General_Algebraic_Function_Model_Name, Model = A_More_General_Algebraic_Function_Model, Sum_of_Squared_Residuals = A_More_General_Algebraic_Function_Model_Sum_of_Squared_Residuals, Fitted_Response_Values = Fitted_A_More_General_Algebraic_Function_Model_Response_Values, Output = A_More_General_Algebraic_Function_Model_Output, Bayesian_p_Value = A_More_General_Algebraic_Function_Model_Bayesian_p_Value)
   
   
+  Gompertz_Function_Model_Name <- "Gompertz Function"
+  Lowercase_Gompertz_Function_Model_Name <- "Gompertz function"
+  sink("Gompertz Function Model.txt")
+  cat("model {
+    
+    # Priors
+    Intercept ~ dnorm(0, 0.001)
+    Slope ~ dnorm(0, 0.001)
+    Sigma ~ dlnorm(0, 1)
+    Tau <- (1 / (Sigma ^ 2))
+    
+    # Likelihood and Model Fit
+    for (i in 1:Number_of_Observations) {
+      Response[i] ~ dnorm(Mean[i], Tau)
+      Mean[i] <- (exp(-exp(Intercept - (Slope * Predictor[i]))))
+      Actual_Squared_Residual[i] <- ((Response[i] - Mean[i]) ^ 2)
+      Simulated_Response[i] ~ dbern(Mean[i])
+      Simulated_Squared_Residual[i] <- ((Simulated_Response[i] - Mean[i]) ^ 2)
+    }
+    Bayesian_p_Value <- step((sum((Simulated_Squared_Residual[]) ^ 2)) / (sum((Actual_Squared_Residual[]) ^ 2)) - 1) 
+    
+  }", fill = T)
+  sink()
+  Parameters <- c("Intercept", "Slope", "Bayesian_p_Value")
+  Gompertz_Function_Model_Output <- R2jags::jags(Data, Initial_Values, Parameters, "Gompertz Function Model.txt", n.chains = Number_of_Chains, n.thin = Thinning_Rate, n.iter = Number_of_Iterations, n.burnin = Burn_in_Value, working.directory = Working_Directory)
+  Fitted_Gompertz_Function_Model_Response_Values <- (exp(-exp(as.numeric(Gompertz_Function_Model_Output$BUGSoutput$mean$Intercept) - (as.numeric(Gompertz_Function_Model_Output$BUGSoutput$mean$Slope) * Fitted_Predictor_Values))))
+  Gompertz_Function_Model_Sum_of_Squared_Residuals <- sum((Response - (exp(-exp(as.numeric(Gompertz_Function_Model_Output$BUGSoutput$mean$Intercept) - (as.numeric(Gompertz_Function_Model_Output$BUGSoutput$mean$Slope) * Predictor))))) ^ 2)
+  Gompertz_Function_Model <- paste0(Response_Name, " = (exp(-exp(", as.numeric(Gompertz_Function_Model_Output$BUGSoutput$mean$Intercept), " - (", as.numeric(Gompertz_Function_Model_Output$BUGSoutput$mean$Slope), " * ", Predictor_Name, "))))")
+  Gompertz_Function_Model_Bayesian_p_Value <- as.numeric(Gompertz_Function_Model_Output$BUGSoutput$mean$Bayesian_p_Value)
+  Gompertz_Function_Model_Information <- list(Model_Name = Gompertz_Function_Model_Name, Lowercase_Model_Name = Lowercase_Gompertz_Function_Model_Name, Model = Gompertz_Function_Model, Sum_of_Squared_Residuals = Gompertz_Function_Model_Sum_of_Squared_Residuals, Fitted_Response_Values = Fitted_Gompertz_Function_Model_Response_Values, Output = Gompertz_Function_Model_Output, Bayesian_p_Value = Gompertz_Function_Model_Bayesian_p_Value)
+  
+  
   # Compiling the Models Into One List
   
-  Model_List <- list(Logistic_Function_Model = Logistic_Function_Model_Information, Hyperbolic_Tangent_Model = Hyperbolic_Tangent_Model_Information, Arctangent_Function_Model = Arctangent_Function_Model_Information, Gudermannian_Function_Model = Gudermannian_Function_Model_Information, Error_Function_Model_Information = Error_Function_Model_Information, Generalised_Logistic_Function_Model = Generalised_Logistic_Function_Model_Information, Algebraic_Function_Model = Algebraic_Function_Model_Information, A_More_General_Algebraic_Function_Model = A_More_General_Algebraic_Function_Model_Information)
+  Model_List <- list(Logistic_Function_Model = Logistic_Function_Model_Information, Hyperbolic_Tangent_Model = Hyperbolic_Tangent_Model_Information, Arctangent_Function_Model = Arctangent_Function_Model_Information, Gudermannian_Function_Model = Gudermannian_Function_Model_Information, Error_Function_Model_Information = Error_Function_Model_Information, Generalised_Logistic_Function_Model = Generalised_Logistic_Function_Model_Information, Algebraic_Function_Model = Algebraic_Function_Model_Information, A_More_General_Algebraic_Function_Model = A_More_General_Algebraic_Function_Model_Information, Gompertz_Function_Model = Gompertz_Function_Model_Information)
   
   
   # Returning the Pertinent Model Information
@@ -447,7 +486,7 @@ Data_Frame <- data.frame(Predictor_Variable = Predictor_Variable, Response_Varia
 
 # Make sure to expand the plotting window.
 
-Color <- 2:(length(Function_Output$Model_Information) + 1)
+Color <- rainbow(length(Function_Output$Model_Information))
 par(mar = c(12, 4, 4, 2))
 plot(Response_Variable ~ Predictor_Variable, Data_Frame, main = "Fitting Sigmoid Models to the Data", xlab = "", ylab = "")
 title(xlab = "Predictor Variable", line = 2.5)
