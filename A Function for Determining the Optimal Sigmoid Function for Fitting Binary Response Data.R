@@ -36,7 +36,7 @@
 # variables.
 
 # I took an outstanding course in Bayesian statistics with Dr. Remington Moll
-# at the University of New Hampshire that really helped me write this function.
+# at the University of New Hampshire that helped me write this function.
 
 # This function takes 8 arguments. The first two are required.
 
