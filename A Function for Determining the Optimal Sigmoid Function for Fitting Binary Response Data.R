@@ -76,29 +76,29 @@
 
 # The Function
 
-Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, Data_Frame, Number_of_Iterations = 1000, Thinning_Rate = 1, Burn_in_Value = 100, Number_of_Chains = 3, Working_Directory = getwd()) {
+Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, Data_Frame, Number_of_Iterations = 10000, Thinning_Rate = 1, Burn_in_Value = 1000, Number_of_Chains = 3, Working_Directory = getwd()) {
   
   # Prepare the Data
   
-  Predictor_Name <- gsub("^.*[$]", "", deparse(substitute(Predictor)))
-  Response_Name <- gsub("^.*[$]", "", deparse(substitute(Response)))
+  Predictor_Name <- deparse(substitute(Predictor))
+  Response_Name <- deparse(substitute(Response))
   if (!missing(Data_Frame)) {
     if (class(Data_Frame) != 'data.frame') {
       stop ("'Data_Frame' must be of class 'data.frame'.")
     }
     Data_Frame <- Data_Frame[, c(Predictor_Name, Response_Name)]
   } else if (missing(Data_Frame)) {
-    Data_Frame <- data.frame(Predictor, Response)
+    Data_Frame <- data.frame(Predictor = Predictor, Response = Response)
   }
-  Predictor <- Data_Frame[, which(colnames(Data_Frame) == Predictor_Name)]
-  Response <- Data_Frame[, which(colnames(Data_Frame) == Response_Name)]
-  Data <- list(Predictor = Data_Frame[, which(colnames(Data_Frame) == Predictor_Name)], Response = Data_Frame[, which(colnames(Data_Frame) == Response_Name)], Number_of_Observations = nrow(Data_Frame))
+  Predictor <- Data_Frame$Predictor
+  Response <- Data_Frame$Response
+  Data <- list(Predictor = Data_Frame$Predictor, Response = Data_Frame$Response, Number_of_Observations = nrow(Data_Frame))
   Initial_Values <- function () {
     list()
   }
-  Fitted_Predictor_Values <- seq(Minimum_Predictor_Value, Maximum_Predictor_Value, length.out = 100000)
+  Fitted_Predictor_Values <- seq(Minimum_Predictor_Value, Maximum_Predictor_Value, length.out = 1000000)
   
-    
+  
   # Meet Some Initial Conditions
   
   if (!is.integer(Predictor) & !is.numeric(Predictor)) {
@@ -122,6 +122,11 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   if (!is.character(Working_Directory) | !file.exists(Working_Directory)) {
     stop ("The 'Working_Directory' argument must be a character vector and it must be a valid path to a folder on this computer.")
   }
+  
+  
+  # Calculating the Total Sum of Squares
+  
+  Total_Sum_of_Squares <- sum((Response - mean(Response)) ^ 2)
   
   
   # Generating a Logistic Function Model
@@ -155,9 +160,10 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   Logistic_Function_Model_Output <- R2jags::jags(Data, Initial_Values, Parameters, "Logistic Function Model.txt", n.chains = Number_of_Chains, n.thin = Thinning_Rate, n.iter = Number_of_Iterations, n.burnin = Burn_in_Value, working.directory = Working_Directory)
   Fitted_Logistic_Function_Model_Response_Values <- (1 / (1 + exp(-(as.numeric(Logistic_Function_Model_Output$BUGSoutput$mean$Intercept) + (as.numeric(Logistic_Function_Model_Output$BUGSoutput$mean$Slope) * Fitted_Predictor_Values)))))
   Logistic_Function_Model_Residual_Sum_of_Squares <- sum((Response - (1 / (1 + exp(-(as.numeric(Logistic_Function_Model_Output$BUGSoutput$mean$Intercept) + (as.numeric(Logistic_Function_Model_Output$BUGSoutput$mean$Slope) * Predictor)))))) ^ 2)
+  Logistic_Function_Model_Pseudo_R_Squared <- 1 - (Logistic_Function_Model_Residual_Sum_of_Squares / Total_Sum_of_Squares)
   Logistic_Function_Model <- paste0(Response_Name, " = (1 / (1 + exp(-(", as.numeric(Logistic_Function_Model_Output$BUGSoutput$mean$Intercept), " + (", as.numeric(Logistic_Function_Model_Output$BUGSoutput$mean$Slope), " * ", Predictor_Name, ")))))")
   Logistic_Function_Model_Bayesian_p_Value <- as.numeric(Logistic_Function_Model_Output$BUGSoutput$mean$Bayesian_p_Value)
-  Logistic_Function_Model_Information <- list(Model_Name = Logistic_Function_Model_Name, Lowercase_Model_Name = Lowercase_Logistic_Function_Model_Name, Model = Logistic_Function_Model, Residual_Sum_of_Squares = Logistic_Function_Model_Residual_Sum_of_Squares, Fitted_Response_Values = Fitted_Logistic_Function_Model_Response_Values, Output = Logistic_Function_Model_Output, Bayesian_p_Value = Logistic_Function_Model_Bayesian_p_Value)
+  Logistic_Function_Model_Information <- list(Model_Name = Logistic_Function_Model_Name, Lowercase_Model_Name = Lowercase_Logistic_Function_Model_Name, Model = Logistic_Function_Model, Residual_Sum_of_Squares = Logistic_Function_Model_Residual_Sum_of_Squares, Pseudo_R_Squared = Logistic_Function_Model_Pseudo_R_Squared, Fitted_Response_Values = Fitted_Logistic_Function_Model_Response_Values, Output = Logistic_Function_Model_Output, Bayesian_p_Value = Logistic_Function_Model_Bayesian_p_Value)
   
   
   # Generating a Hyperbolic Tangent Model
@@ -191,9 +197,10 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   Hyperbolic_Tangent_Model_Output <- R2jags::jags(Data, Initial_Values, Parameters, "Hyperbolic Tangent Model.txt", n.chains = Number_of_Chains, n.thin = Thinning_Rate, n.iter = Number_of_Iterations, n.burnin = Burn_in_Value, working.directory = Working_Directory)
   Fitted_Hyperbolic_Tangent_Model_Response_Values <- ((0.5 * tanh(as.numeric(Hyperbolic_Tangent_Model_Output$BUGSoutput$mean$Intercept) + as.numeric(Hyperbolic_Tangent_Model_Output$BUGSoutput$mean$Slope) * Fitted_Predictor_Values)) + 0.5)
   Hyperbolic_Tangent_Model_Residual_Sum_of_Squares <- sum((Response - ((0.5 * tanh(as.numeric(Hyperbolic_Tangent_Model_Output$BUGSoutput$mean$Intercept) + as.numeric(Hyperbolic_Tangent_Model_Output$BUGSoutput$mean$Slope) * Predictor)) + 0.5)) ^ 2)
+  Hyperbolic_Tangent_Model_Pseudo_R_Squared <- 1 - (Hyperbolic_Tangent_Model_Residual_Sum_of_Squares / Total_Sum_of_Squares)
   Hyperbolic_Tangent_Model <- paste0(Response_Name, " = ((0.5 * tanh(", as.numeric(Hyperbolic_Tangent_Model_Output$BUGSoutput$mean$Intercept), " + (", as.numeric(Hyperbolic_Tangent_Model_Output$BUGSoutput$mean$Slope), " * ", Predictor_Name, "))) + 0.5)")
   Hyperbolic_Tangent_Model_Bayesian_p_Value <- as.numeric(Hyperbolic_Tangent_Model_Output$BUGSoutput$mean$Bayesian_p_Value)
-  Hyperbolic_Tangent_Model_Information <- list(Model_Name = Hyperbolic_Tangent_Model_Name, Lowercase_Model_Name = Lowercase_Hyperbolic_Tangent_Model_Name, Model = Hyperbolic_Tangent_Model, Residual_Sum_of_Squares = Hyperbolic_Tangent_Model_Residual_Sum_of_Squares, Fitted_Response_Values = Fitted_Hyperbolic_Tangent_Model_Response_Values, Output = Hyperbolic_Tangent_Model_Output, Bayesian_p_Value = Hyperbolic_Tangent_Model_Bayesian_p_Value)
+  Hyperbolic_Tangent_Model_Information <- list(Model_Name = Hyperbolic_Tangent_Model_Name, Lowercase_Model_Name = Lowercase_Hyperbolic_Tangent_Model_Name, Model = Hyperbolic_Tangent_Model, Residual_Sum_of_Squares = Hyperbolic_Tangent_Model_Residual_Sum_of_Squares, Pseudo_R_Squared = Hyperbolic_Tangent_Model_Pseudo_R_Squared, Fitted_Response_Values = Fitted_Hyperbolic_Tangent_Model_Response_Values, Output = Hyperbolic_Tangent_Model_Output, Bayesian_p_Value = Hyperbolic_Tangent_Model_Bayesian_p_Value)
   
   
   # Generating an Arctangent Function Model
@@ -228,9 +235,10 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   Arctangent_Function_Model_Output <- R2jags::jags(Data, Initial_Values, Parameters, "Arctangent Function Model.txt", n.chains = Number_of_Chains, n.thin = Thinning_Rate, n.iter = Number_of_Iterations, n.burnin = Burn_in_Value, working.directory = Working_Directory)
   Fitted_Arctangent_Function_Model_Response_Values <- ((0.5 * ((2 / pi) * atan((pi / 2) * (as.numeric(Arctangent_Function_Model_Output$BUGSoutput$mean$Intercept) + as.numeric(Arctangent_Function_Model_Output$BUGSoutput$mean$Slope) * Fitted_Predictor_Values)))) + 0.5)
   Arctangent_Function_Model_Residual_Sum_of_Squares <- sum((Response - ((0.5 * ((2 / pi) * atan((pi / 2) * (as.numeric(Arctangent_Function_Model_Output$BUGSoutput$mean$Intercept) + as.numeric(Arctangent_Function_Model_Output$BUGSoutput$mean$Slope) * Predictor)))) + 0.5)) ^ 2)
+  Arctangent_Function_Model_Pseudo_R_Squared <- 1 - (Arctangent_Function_Model_Residual_Sum_of_Squares / Total_Sum_of_Squares)
   Arctangent_Function_Model <- paste0(Response_Name, " = ((0.5 * ((2 / pi) * atan((pi / 2) * (", as.numeric(Arctangent_Function_Model_Output$BUGSoutput$mean$Intercept), " + (", as.numeric(Arctangent_Function_Model_Output$BUGSoutput$mean$Slope), " * ", Predictor_Name, "))))) + 0.5)")
   Arctangent_Function_Model_Bayesian_p_Value <- as.numeric(Arctangent_Function_Model_Output$BUGSoutput$mean$Bayesian_p_Value)
-  Arctangent_Function_Model_Information <- list(Model_Name = Arctangent_Function_Model_Name, Lowercase_Model_Name = Lowercase_Arctangent_Function_Model_Name, Model = Arctangent_Function_Model, Residual_Sum_of_Squares = Arctangent_Function_Model_Residual_Sum_of_Squares, Fitted_Response_Values = Fitted_Arctangent_Function_Model_Response_Values, Output = Arctangent_Function_Model_Output, Bayesian_p_Value = Arctangent_Function_Model_Bayesian_p_Value)
+  Arctangent_Function_Model_Information <- list(Model_Name = Arctangent_Function_Model_Name, Lowercase_Model_Name = Lowercase_Arctangent_Function_Model_Name, Model = Arctangent_Function_Model, Residual_Sum_of_Squares = Arctangent_Function_Model_Residual_Sum_of_Squares, Pseudo_R_Squared = Arctangent_Function_Model_Pseudo_R_Squared, Fitted_Response_Values = Fitted_Arctangent_Function_Model_Response_Values, Output = Arctangent_Function_Model_Output, Bayesian_p_Value = Arctangent_Function_Model_Bayesian_p_Value)
   
   
   # Generating a Gudermannian Function Model
@@ -265,9 +273,10 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   Gudermannian_Function_Model_Output <- R2jags::jags(Data, Initial_Values, Parameters, "Gudermannian Function Model.txt", n.chains = Number_of_Chains, n.thin = Thinning_Rate, n.iter = Number_of_Iterations, n.burnin = Burn_in_Value, working.directory = Working_Directory)
   Fitted_Gudermannian_Function_Model_Response_Values <- ((2 / pi) * atan(tanh((as.numeric(Gudermannian_Function_Model_Output$BUGSoutput$mean$Intercept) + as.numeric(Gudermannian_Function_Model_Output$BUGSoutput$mean$Slope) * Fitted_Predictor_Values) * pi / 4)) + 0.5)
   Gudermannian_Function_Model_Residual_Sum_of_Squares <- sum((Response - ((2 / pi) * atan(tanh((as.numeric(Gudermannian_Function_Model_Output$BUGSoutput$mean$Intercept) + as.numeric(Gudermannian_Function_Model_Output$BUGSoutput$mean$Slope) * Predictor) * pi / 4)) + 0.5)) ^ 2)
+  Gudermannian_Function_Model_Pseudo_R_Squared <- 1 - (Gudermannian_Function_Model_Residual_Sum_of_Squares / Total_Sum_of_Squares)
   Gudermannian_Function_Model <- paste0(Response_Name, " = ((2 / pi) * atan(tanh((", as.numeric(Gudermannian_Function_Model_Output$BUGSoutput$mean$Intercept), " + (", as.numeric(Gudermannian_Function_Model_Output$BUGSoutput$mean$Slope), " * ", Predictor_Name, ")) * pi / 4)) + 0.5)")
   Gudermannian_Function_Model_Bayesian_p_Value <- as.numeric(Gudermannian_Function_Model_Output$BUGSoutput$mean$Bayesian_p_Value)
-  Gudermannian_Function_Model_Information <- list(Model_Name = Gudermannian_Function_Model_Name, Lowercase_Model_Name = Lowercase_Gudermannian_Function_Model_Name, Model = Gudermannian_Function_Model, Residual_Sum_of_Squares = Gudermannian_Function_Model_Residual_Sum_of_Squares, Fitted_Response_Values = Fitted_Gudermannian_Function_Model_Response_Values, Output = Gudermannian_Function_Model_Output, Bayesian_p_Value = Gudermannian_Function_Model_Bayesian_p_Value)
+  Gudermannian_Function_Model_Information <- list(Model_Name = Gudermannian_Function_Model_Name, Lowercase_Model_Name = Lowercase_Gudermannian_Function_Model_Name, Model = Gudermannian_Function_Model, Residual_Sum_of_Squares = Gudermannian_Function_Model_Residual_Sum_of_Squares, Pseudo_R_Squared = Gudermannian_Function_Model_Pseudo_R_Squared, Fitted_Response_Values = Fitted_Gudermannian_Function_Model_Response_Values, Output = Gudermannian_Function_Model_Output, Bayesian_p_Value = Gudermannian_Function_Model_Bayesian_p_Value)
   
   
   # Generating an Error Function Model
@@ -302,9 +311,10 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   Error_Function_Model_Output <- R2jags::jags(Data, Initial_Values, Parameters, "Error Function Model.txt", n.chains = Number_of_Chains, n.thin = Thinning_Rate, n.iter = Number_of_Iterations, n.burnin = Burn_in_Value, working.directory = Working_Directory)
   Fitted_Error_Function_Model_Response_Values <- ((0.5 * ((2 * pnorm((as.numeric(Error_Function_Model_Output$BUGSoutput$mean$Intercept) + (as.numeric(Error_Function_Model_Output$BUGSoutput$mean$Slope) * Fitted_Predictor_Values)) * sqrt(2))) - 1)) + 0.5)
   Error_Function_Model_Residual_Sum_of_Squares <- sum((Response - ((0.5 * ((2 * pnorm((as.numeric(Error_Function_Model_Output$BUGSoutput$mean$Intercept) + (as.numeric(Error_Function_Model_Output$BUGSoutput$mean$Slope) * Predictor)) * sqrt(2))) - 1)) + 0.5)) ^ 2)
+  Error_Function_Model_Pseudo_R_Squared <- 1 - (Error_Function_Model_Residual_Sum_of_Squares / Total_Sum_of_Squares)
   Error_Function_Model <- paste0(Response_Name, " = ((0.5 * ((2 * pnorm((", as.numeric(Error_Function_Model_Output$BUGSoutput$mean$Intercept)," + (", as.numeric(Error_Function_Model_Output$BUGSoutput$mean$Slope), " * ", Predictor_Name, ")) * sqrt(2))) - 1)) + 0.5)")
   Error_Function_Model_Bayesian_p_Value <- as.numeric(Error_Function_Model_Output$BUGSoutput$mean$Bayesian_p_Value)
-  Error_Function_Model_Information <- list(Model_Name = Error_Function_Model_Name, Lowercase_Model_Name = Lowercase_Error_Function_Model_Name, Model = Error_Function_Model, Residual_Sum_of_Squares = Error_Function_Model_Residual_Sum_of_Squares, Fitted_Response_Values = Fitted_Error_Function_Model_Response_Values, Output = Error_Function_Model_Output, Bayesian_p_Value = Error_Function_Model_Bayesian_p_Value)
+  Error_Function_Model_Information <- list(Model_Name = Error_Function_Model_Name, Lowercase_Model_Name = Lowercase_Error_Function_Model_Name, Model = Error_Function_Model, Residual_Sum_of_Squares = Error_Function_Model_Residual_Sum_of_Squares, Pseudo_R_Squared = Error_Function_Model_Pseudo_R_Squared, Fitted_Response_Values = Fitted_Error_Function_Model_Response_Values, Output = Error_Function_Model_Output, Bayesian_p_Value = Error_Function_Model_Bayesian_p_Value)
   
   
   # Generating a Generalised Logistic Function Model
@@ -339,9 +349,10 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   Generalised_Logistic_Function_Model_Output <- R2jags::jags(Data, Initial_Values, Parameters, "Generalised Logistic Function Model.txt", n.chains = Number_of_Chains, n.thin = Thinning_Rate, n.iter = Number_of_Iterations, n.burnin = Burn_in_Value, working.directory = Working_Directory)
   Fitted_Generalised_Logistic_Function_Model_Response_Values <- ((1 + exp(-(as.numeric(Generalised_Logistic_Function_Model_Output$BUGSoutput$mean$Intercept) + as.numeric(Generalised_Logistic_Function_Model_Output$BUGSoutput$mean$Slope) * Fitted_Predictor_Values))) ^ (-as.numeric(Generalised_Logistic_Function_Model_Output$BUGSoutput$mean$Exponent)))
   Generalised_Logistic_Function_Model_Residual_Sum_of_Squares <- sum((Response - ((1 + exp(-(as.numeric(Generalised_Logistic_Function_Model_Output$BUGSoutput$mean$Intercept) + as.numeric(Generalised_Logistic_Function_Model_Output$BUGSoutput$mean$Slope) * Predictor))) ^ (-as.numeric(Generalised_Logistic_Function_Model_Output$BUGSoutput$mean$Exponent)))) ^ 2)
+  Generalised_Logistic_Function_Model_Pseudo_R_Squared <- 1 - (Generalised_Logistic_Function_Model_Residual_Sum_of_Squares / Total_Sum_of_Squares)
   Generalised_Logistic_Function_Model <- paste0(Response_Name, " = ((1 + exp(-(", as.numeric(Generalised_Logistic_Function_Model_Output$BUGSoutput$mean$Intercept), " + (", as.numeric(Generalised_Logistic_Function_Model_Output$BUGSoutput$mean$Slope), " * ", Predictor_Name, ")))) ^ (-", as.numeric(Generalised_Logistic_Function_Model_Output$BUGSoutput$mean$Exponent), "))")
   Generalised_Logistic_Function_Model_Bayesian_p_Value <- as.numeric(Generalised_Logistic_Function_Model_Output$BUGSoutput$mean$Bayesian_p_Value)
-  Generalised_Logistic_Function_Model_Information <- list(Model_Name = Generalised_Logistic_Function_Model_Name, Lowercase_Model_Name = Lowercase_Generalised_Logistic_Function_Model_Name, Model = Generalised_Logistic_Function_Model, Residual_Sum_of_Squares = Generalised_Logistic_Function_Model_Residual_Sum_of_Squares, Fitted_Response_Values = Fitted_Generalised_Logistic_Function_Model_Response_Values, Output = Generalised_Logistic_Function_Model_Output, Bayesian_p_Value = Generalised_Logistic_Function_Model_Bayesian_p_Value)
+  Generalised_Logistic_Function_Model_Information <- list(Model_Name = Generalised_Logistic_Function_Model_Name, Lowercase_Model_Name = Lowercase_Generalised_Logistic_Function_Model_Name, Model = Generalised_Logistic_Function_Model, Residual_Sum_of_Squares = Generalised_Logistic_Function_Model_Residual_Sum_of_Squares, Pseudo_R_Squared = Generalised_Logistic_Function_Model_Pseudo_R_Squared, Fitted_Response_Values = Fitted_Generalised_Logistic_Function_Model_Response_Values, Output = Generalised_Logistic_Function_Model_Output, Bayesian_p_Value = Generalised_Logistic_Function_Model_Bayesian_p_Value)
   
   
   # Generating an Algebraic Function Model
@@ -375,9 +386,10 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   Algebraic_Function_Model_Output <- R2jags::jags(Data, Initial_Values, Parameters, "Algebraic Function Model.txt", n.chains = Number_of_Chains, n.thin = Thinning_Rate, n.iter = Number_of_Iterations, n.burnin = Burn_in_Value, working.directory = Working_Directory)
   Fitted_Algebraic_Function_Model_Response_Values <- ((0.5 * ((as.numeric(Algebraic_Function_Model_Output$BUGSoutput$mean$Intercept) + as.numeric(Algebraic_Function_Model_Output$BUGSoutput$mean$Slope) * Fitted_Predictor_Values) / sqrt(1 + ((as.numeric(Algebraic_Function_Model_Output$BUGSoutput$mean$Intercept) + as.numeric(Algebraic_Function_Model_Output$BUGSoutput$mean$Slope) * Fitted_Predictor_Values) ^ 2)))) + 0.5)
   Algebraic_Function_Model_Residual_Sum_of_Squares <- sum((Response - ((0.5 * ((as.numeric(Algebraic_Function_Model_Output$BUGSoutput$mean$Intercept) + as.numeric(Algebraic_Function_Model_Output$BUGSoutput$mean$Slope) * Predictor) / sqrt(1 + ((as.numeric(Algebraic_Function_Model_Output$BUGSoutput$mean$Intercept) + as.numeric(Algebraic_Function_Model_Output$BUGSoutput$mean$Slope) * Predictor) ^ 2)))) + 0.5)) ^ 2)
+  Algebraic_Function_Model_Pseudo_R_Squared <- 1 - (Algebraic_Function_Model_Residual_Sum_of_Squares / Total_Sum_of_Squares)
   Algebraic_Function_Model <- paste0(Response_Name, " = ((0.5 * ((", as.numeric(Algebraic_Function_Model_Output$BUGSoutput$mean$Intercept), " + (", as.numeric(Algebraic_Function_Model_Output$BUGSoutput$mean$Slope), " * ", Predictor_Name, ")) / sqrt(1 + ((", as.numeric(Algebraic_Function_Model_Output$BUGSoutput$mean$Intercept), " + (", as.numeric(Algebraic_Function_Model_Output$BUGSoutput$mean$Slope), " * ", Predictor_Name, ")) ^ 2)))) + 0.5)")
   Algebraic_Function_Model_Bayesian_p_Value <- as.numeric(Algebraic_Function_Model_Output$BUGSoutput$mean$Bayesian_p_Value)
-  Algebraic_Function_Model_Information <- list(Model_Name = Algebraic_Function_Model_Name, Lowercase_Model_Name = Lowercase_Algebraic_Function_Model_Name, Model = Algebraic_Function_Model, Residual_Sum_of_Squares = Algebraic_Function_Model_Residual_Sum_of_Squares, Fitted_Response_Values = Fitted_Algebraic_Function_Model_Response_Values, Output = Algebraic_Function_Model_Output, Bayesian_p_Value = Algebraic_Function_Model_Bayesian_p_Value)
+  Algebraic_Function_Model_Information <- list(Model_Name = Algebraic_Function_Model_Name, Lowercase_Model_Name = Lowercase_Algebraic_Function_Model_Name, Model = Algebraic_Function_Model, Residual_Sum_of_Squares = Algebraic_Function_Model_Residual_Sum_of_Squares, Pseudo_R_Squared = Algebraic_Function_Model_Pseudo_R_Squared, Fitted_Response_Values = Fitted_Algebraic_Function_Model_Response_Values, Output = Algebraic_Function_Model_Output, Bayesian_p_Value = Algebraic_Function_Model_Bayesian_p_Value)
   
   
   # Generating a More General Algebraic Function Model
@@ -412,9 +424,10 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   A_More_General_Algebraic_Function_Model_Output <- R2jags::jags(Data, Initial_Values, Parameters, "A More General Algebraic Function Model.txt", n.chains = Number_of_Chains, n.thin = Thinning_Rate, n.iter = Number_of_Iterations, n.burnin = Burn_in_Value, working.directory = Working_Directory)
   Fitted_A_More_General_Algebraic_Function_Model_Response_Values <- ((0.5 * ((as.numeric(A_More_General_Algebraic_Function_Model_Output$BUGSoutput$mean$Intercept) + as.numeric(A_More_General_Algebraic_Function_Model_Output$BUGSoutput$mean$Slope) * Fitted_Predictor_Values) / ((1 + (abs(as.numeric(A_More_General_Algebraic_Function_Model_Output$BUGSoutput$mean$Intercept) + as.numeric(A_More_General_Algebraic_Function_Model_Output$BUGSoutput$mean$Slope) * Fitted_Predictor_Values) ^ as.numeric(A_More_General_Algebraic_Function_Model_Output$BUGSoutput$mean$Exponent))) ^ (1 / as.numeric(A_More_General_Algebraic_Function_Model_Output$BUGSoutput$mean$Exponent))))) + 0.5)
   A_More_General_Algebraic_Function_Model_Residual_Sum_of_Squares <- sum((Response - ((0.5 * ((as.numeric(A_More_General_Algebraic_Function_Model_Output$BUGSoutput$mean$Intercept) + as.numeric(A_More_General_Algebraic_Function_Model_Output$BUGSoutput$mean$Slope) * Predictor) / ((1 + (abs(as.numeric(A_More_General_Algebraic_Function_Model_Output$BUGSoutput$mean$Intercept) + as.numeric(A_More_General_Algebraic_Function_Model_Output$BUGSoutput$mean$Slope) * Predictor) ^ as.numeric(A_More_General_Algebraic_Function_Model_Output$BUGSoutput$mean$Exponent))) ^ (1 / as.numeric(A_More_General_Algebraic_Function_Model_Output$BUGSoutput$mean$Exponent))))) + 0.5)) ^ 2)
+  A_More_General_Algebraic_Logistic_Function_Model_Pseudo_R_Squared <- 1 - (A_More_General_Algebraic_Function_Model_Residual_Sum_of_Squares / Total_Sum_of_Squares)
   A_More_General_Algebraic_Function_Model <- paste0(Response_Name, " = ((0.5 * ((", as.numeric(A_More_General_Algebraic_Function_Model_Output$BUGSoutput$mean$Intercept), " + (", as.numeric(A_More_General_Algebraic_Function_Model_Output$BUGSoutput$mean$Slope), " * ", Predictor_Name, ")) / ((1 + (abs(", as.numeric(A_More_General_Algebraic_Function_Model_Output$BUGSoutput$mean$Intercept), " + (", as.numeric(A_More_General_Algebraic_Function_Model_Output$BUGSoutput$mean$Slope), " * ", Predictor_Name, ")) ^ ", as.numeric(A_More_General_Algebraic_Function_Model_Output$BUGSoutput$mean$Exponent), ")) ^ (1 / ", as.numeric(A_More_General_Algebraic_Function_Model_Output$BUGSoutput$mean$Exponent), ")))) + 0.5)")
   A_More_General_Algebraic_Function_Model_Bayesian_p_Value <- as.numeric(A_More_General_Algebraic_Function_Model_Output$BUGSoutput$mean$Bayesian_p_Value)
-  A_More_General_Algebraic_Function_Model_Information <- list(Model_Name = A_More_General_Algebraic_Function_Model_Name, Lowercase_Model_Name = Lowercase_A_More_General_Algebraic_Function_Model_Name, Model = A_More_General_Algebraic_Function_Model, Residual_Sum_of_Squares = A_More_General_Algebraic_Function_Model_Residual_Sum_of_Squares, Fitted_Response_Values = Fitted_A_More_General_Algebraic_Function_Model_Response_Values, Output = A_More_General_Algebraic_Function_Model_Output, Bayesian_p_Value = A_More_General_Algebraic_Function_Model_Bayesian_p_Value)
+  A_More_General_Algebraic_Function_Model_Information <- list(Model_Name = A_More_General_Algebraic_Function_Model_Name, Lowercase_Model_Name = Lowercase_A_More_General_Algebraic_Function_Model_Name, Model = A_More_General_Algebraic_Function_Model, Residual_Sum_of_Squares = A_More_General_Algebraic_Function_Model_Residual_Sum_of_Squares, Pseudo_R_Squared = A_More_General_Algebraic_Logistic_Function_Model_Pseudo_R_Squared, Fitted_Response_Values = Fitted_A_More_General_Algebraic_Function_Model_Response_Values, Output = A_More_General_Algebraic_Function_Model_Output, Bayesian_p_Value = A_More_General_Algebraic_Function_Model_Bayesian_p_Value)
   
   
   # Generating a Gompertz Function Model
@@ -448,9 +461,10 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   Gompertz_Function_Model_Output <- R2jags::jags(Data, Initial_Values, Parameters, "Gompertz Function Model.txt", n.chains = Number_of_Chains, n.thin = Thinning_Rate, n.iter = Number_of_Iterations, n.burnin = Burn_in_Value, working.directory = Working_Directory)
   Fitted_Gompertz_Function_Model_Response_Values <- (exp(-exp(as.numeric(Gompertz_Function_Model_Output$BUGSoutput$mean$Intercept) + (as.numeric(Gompertz_Function_Model_Output$BUGSoutput$mean$Slope) * Fitted_Predictor_Values))))
   Gompertz_Function_Model_Residual_Sum_of_Squares <- sum((Response - (exp(-exp(as.numeric(Gompertz_Function_Model_Output$BUGSoutput$mean$Intercept) + (as.numeric(Gompertz_Function_Model_Output$BUGSoutput$mean$Slope) * Predictor))))) ^ 2)
+  Gompertz_Function_Model_Pseudo_R_Squared <- 1 - (Gompertz_Function_Model_Residual_Sum_of_Squares / Total_Sum_of_Squares)
   Gompertz_Function_Model <- paste0(Response_Name, " = (exp(-exp(", as.numeric(Gompertz_Function_Model_Output$BUGSoutput$mean$Intercept), " + (", as.numeric(Gompertz_Function_Model_Output$BUGSoutput$mean$Slope), " * ", Predictor_Name, "))))")
   Gompertz_Function_Model_Bayesian_p_Value <- as.numeric(Gompertz_Function_Model_Output$BUGSoutput$mean$Bayesian_p_Value)
-  Gompertz_Function_Model_Information <- list(Model_Name = Gompertz_Function_Model_Name, Lowercase_Model_Name = Lowercase_Gompertz_Function_Model_Name, Model = Gompertz_Function_Model, Residual_Sum_of_Squares = Gompertz_Function_Model_Residual_Sum_of_Squares, Fitted_Response_Values = Fitted_Gompertz_Function_Model_Response_Values, Output = Gompertz_Function_Model_Output, Bayesian_p_Value = Gompertz_Function_Model_Bayesian_p_Value)
+  Gompertz_Function_Model_Information <- list(Model_Name = Gompertz_Function_Model_Name, Lowercase_Model_Name = Lowercase_Gompertz_Function_Model_Name, Model = Gompertz_Function_Model, Residual_Sum_of_Squares = Gompertz_Function_Model_Residual_Sum_of_Squares, Pseudo_R_Squared = Gompertz_Function_Model_Pseudo_R_Squared, Fitted_Response_Values = Fitted_Gompertz_Function_Model_Response_Values, Output = Gompertz_Function_Model_Output, Bayesian_p_Value = Gompertz_Function_Model_Bayesian_p_Value)
   
   
   # Generating a Gompertz Function Model That Has Been Rotated by 180 Degrees
@@ -484,9 +498,10 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   Rotated_Gompertz_Function_Model_Output <- R2jags::jags(Data, Initial_Values, Parameters, "Rotated Gompertz Function Model.txt", n.chains = Number_of_Chains, n.thin = Thinning_Rate, n.iter = Number_of_Iterations, n.burnin = Burn_in_Value, working.directory = Working_Directory)
   Fitted_Rotated_Gompertz_Function_Model_Response_Values <- (1 - (exp(-exp(as.numeric(Rotated_Gompertz_Function_Model_Output$BUGSoutput$mean$Intercept) + (as.numeric(Rotated_Gompertz_Function_Model_Output$BUGSoutput$mean$Slope) * Fitted_Predictor_Values)))))
   Rotated_Gompertz_Function_Model_Residual_Sum_of_Squares <- sum((Response - (1 - (exp(-exp(as.numeric(Rotated_Gompertz_Function_Model_Output$BUGSoutput$mean$Intercept) + (as.numeric(Rotated_Gompertz_Function_Model_Output$BUGSoutput$mean$Slope) * Predictor)))))) ^ 2)
+  Rotated_Gompertz_Function_Model_Pseudo_R_Squared <- 1 - (Rotated_Gompertz_Function_Model_Residual_Sum_of_Squares / Total_Sum_of_Squares)
   Rotated_Gompertz_Function_Model <- paste0(Response_Name, " = (1 - (exp(-exp(", as.numeric(Rotated_Gompertz_Function_Model_Output$BUGSoutput$mean$Intercept), " + (", as.numeric(Rotated_Gompertz_Function_Model_Output$BUGSoutput$mean$Slope), " * ", Predictor_Name, ")))))")
   Rotated_Gompertz_Function_Model_Bayesian_p_Value <- as.numeric(Rotated_Gompertz_Function_Model_Output$BUGSoutput$mean$Bayesian_p_Value)
-  Rotated_Gompertz_Function_Model_Information <- list(Model_Name = Rotated_Gompertz_Function_Model_Name, Lowercase_Model_Name = Lowercase_Rotated_Gompertz_Function_Model_Name, Model = Rotated_Gompertz_Function_Model, Residual_Sum_of_Squares = Rotated_Gompertz_Function_Model_Residual_Sum_of_Squares, Fitted_Response_Values = Fitted_Rotated_Gompertz_Function_Model_Response_Values, Output = Rotated_Gompertz_Function_Model_Output, Bayesian_p_Value = Rotated_Gompertz_Function_Model_Bayesian_p_Value)
+  Rotated_Gompertz_Function_Model_Information <- list(Model_Name = Rotated_Gompertz_Function_Model_Name, Lowercase_Model_Name = Lowercase_Rotated_Gompertz_Function_Model_Name, Model = Rotated_Gompertz_Function_Model, Residual_Sum_of_Squares = Rotated_Gompertz_Function_Model_Residual_Sum_of_Squares, Pseudo_R_Squared = Rotated_Gompertz_Function_Model_Pseudo_R_Squared, Fitted_Response_Values = Fitted_Rotated_Gompertz_Function_Model_Response_Values, Output = Rotated_Gompertz_Function_Model_Output, Bayesian_p_Value = Rotated_Gompertz_Function_Model_Bayesian_p_Value)
   
   
   # Compiling the Models Into One List
@@ -497,13 +512,19 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   # Returning the Pertinent Model Information
   
   Pertinent_Model_Information_List <- lapply(Model_List, function (x) {
-    list(Model_Name = x$Model_Name, Model = x$Model, Fitted_Values = data.frame(Predictor = Fitted_Predictor_Values, Response = x$Fitted_Response_Values), Residual_Sum_of_Squares = x$Residual_Sum_of_Squares, Output = x$Output$BUGSoutput$summary)
+    list(Model_Name = x$Model_Name, Model = x$Model, Fitted_Values = data.frame(Predictor = Fitted_Predictor_Values, Response = x$Fitted_Response_Values), Residual_Sum_of_Squares = x$Residual_Sum_of_Squares, Pseudo_R_Squared = x$Pseudo_R_Squared, Output = x$Output$BUGSoutput$summary)
   })
-  Pertinent_Model_Information_List <- list(Model_Information = Pertinent_Model_Information_List, Conclusion = paste0("The model that best fits the data is the ", unlist(sapply(Model_List, `[`, 'Lowercase_Model_Name'))[which.min(unlist(sapply(Model_List, `[`, 'Residual_Sum_of_Squares')))], " model."))
+  Pertinent_Model_Information_List <- list(Model_Information = Pertinent_Model_Information_List, Conclusion = paste0("The model that best fits the data is the ", unlist(sapply(Model_List, `[`, 'Lowercase_Model_Name'))[which.max(unlist(sapply(Model_List, `[`, 'Pseudo_R_Squared')))], " model."))
+  class(Pertinent_Model_Information_List) <- "Custom_Class"
   return (Pertinent_Model_Information_List)
   
 }
 
+print.Custom_Class <- function (x) {
+  print(c(lapply(Function_Output$Model_Information, `[`, c('Model_Name', 'Model', 'Residual_Sum_of_Squares', 'Pseudo_R_Squared', 'Output')), Conclusion = x$Conclusion))
+}
+
+# lapply(Function_Output$Model_Information, `[`, c('Model_Name', 'Model', 'Pseudo_R_Squared', 'Output'))
 
 # An Example
 
@@ -526,13 +547,14 @@ Data_Frame <- data.frame(Predictor_Variable = Predictor_Variable, Response_Varia
 
 Color <- rainbow(length(Function_Output$Model_Information))
 par(mar = c(12, 4, 4, 2))
-plot(Response_Variable ~ Predictor_Variable, Data_Frame, main = "Fitting Sigmoid Models to the Data", xlab = "", ylab = "")
+plot(Response_Variable ~ Predictor_Variable, Data_Frame, main = "Fitting Sigmoid Models to the Data", xlab = "", ylab = "", pch = 19, type = 'n')
 title(xlab = "Predictor Variable", line = 2.5)
 title(ylab = "Response Variable", line = 2.5)
 for (i in seq_len(length(Function_Output$Model_Information))) {
-  lines(Function_Output$Model_Information[[i]]$Fitted_Values$Response ~ Function_Output$Model_Information[[i]]$Fitted_Values$Predictor, col = Color[i])
+  lines(Function_Output$Model_Information[[i]]$Fitted_Values$Response ~ Function_Output$Model_Information[[i]]$Fitted_Values$Predictor, col = Color[i], lwd = 2)
 }
-legend("bottom", xpd = T, ncol = 2, inset = c(0, -0.55), title = "Model Type (Residual Sum of Squares)", legend = paste0(unlist(sapply(Function_Output$Model_Information, `[`, 'Model_Name')), " (", round(unlist(sapply(Function_Output$Model_Information, `[`, 'Residual_Sum_of_Squares')), 3), ")"), col = Color, lty = 1)
+points(Response_Variable ~ Predictor_Variable, Data_Frame, pch = 19)
+legend("bottom", xpd = T, ncol = 2, inset = c(0, -0.55), title = expression(paste("Model Type (Pseudo ", italic("R") ^ "2" * ")")), legend = paste0(unlist(sapply(Function_Output$Model_Information, `[`, 'Model_Name')), " (", format(round(unlist(sapply(Function_Output$Model_Information, `[`, 'Pseudo_R_Squared')), 3), nsmall = 3), ")"), col = Color, lty = 1, lwd = 2)
 
 
 # Works Cited
