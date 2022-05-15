@@ -524,7 +524,6 @@ print.Custom_Class <- function (x) {
   print(c(lapply(Function_Output$Model_Information, `[`, c('Model_Name', 'Model', 'Residual_Sum_of_Squares', 'Pseudo_R_Squared', 'Output')), Conclusion = x$Conclusion))
 }
 
-# lapply(Function_Output$Model_Information, `[`, c('Model_Name', 'Model', 'Pseudo_R_Squared', 'Output'))
 
 # An Example
 
