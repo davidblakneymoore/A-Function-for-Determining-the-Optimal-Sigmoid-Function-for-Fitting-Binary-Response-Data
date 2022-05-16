@@ -76,7 +76,7 @@
 
 # The Function
 
-Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, Data_Frame, Number_of_Iterations = 10000, Thinning_Rate = 1, Burn_in_Value = 1000, Number_of_Chains = 3, Working_Directory = getwd()) {
+Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, Data_Frame, Number_of_Iterations = 100000, Thinning_Rate = 1, Burn_in_Value = 1000, Number_of_Chains = 3, Working_Directory = getwd()) {
   
   # Prepare the Data
   
