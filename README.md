@@ -4,7 +4,7 @@ Though logistic regression is almost exclusively used for modeling probabilities
 
 This function uses the `R2jags` package heavily and it returns all the pertinent information for each model. For each model, it returns the model name, the actual model (with the parameters that best fit the data included), a data frame of fitted predictors and responses for plotting, the residual sum of squares, and the output from the Bayesian analysis, which includes all the coefficients and the Bayesian p value.
 
-Unfortunately, this function can't handle multiple predictor variables yet. Some day I may update it to be able to account for multiple predictor variables.
+Unfortunately, this function can't handle multiple predictor variables yet. Someday I may update it to be able to account for multiple predictor variables.
 
 I took an outstanding course in Bayesian statistics with Dr. Remington Moll at the University of New Hampshire that helped me write this function.
 
