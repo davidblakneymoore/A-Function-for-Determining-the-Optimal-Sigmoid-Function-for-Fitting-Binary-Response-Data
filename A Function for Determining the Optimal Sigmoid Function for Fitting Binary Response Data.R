@@ -49,8 +49,8 @@
 # be supplied for the 'Predictor' and the 'Response' arguments. The data frame
 # that these columns are from should be provided for this Data_Frame argument.
 
-# 'Number_of_Iterations = 1000' is the number of iterations each Markov chain
-# Monte Carlo simulation undergoes. The default is '1000'. More iterations lead
+# 'Number_of_Iterations = 100000' is the number of iterations each Markov chain
+# Monte Carlo simulation undergoes. The default is '100000'. More iterations lead
 # to more precise results, but the program will take longer to run.
 
 # 'Thinning_Rate = 1' describes how many iterations of the Markov chain Monte
@@ -58,7 +58,7 @@
 # example, if the thinning rate is 3, every third iteration of the Markov chain
 # Monte Carlo simulation would be stored as model output.
 
-# 'Burn_in_Value = 100' is the number of initial iterations of each Markov
+# 'Burn_in_Value = 1000' is the number of initial iterations of each Markov
 # chain Monte Carlo simulation that are discarded. Typically, it takes several
 # iterations for parameter estimates to stabilize, so it is worthwhile to
 # discard the first several iterations so they are not used in the final
