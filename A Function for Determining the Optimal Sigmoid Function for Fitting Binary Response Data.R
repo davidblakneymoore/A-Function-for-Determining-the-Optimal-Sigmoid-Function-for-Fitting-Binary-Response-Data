@@ -52,8 +52,8 @@
 # 'Number_of_Iterations = 100000' is the number of iterations each Markov chain
 # Monte Carlo simulation undergoes. The default is '1000'. More iterations lead
 # to more precise results, but the program will take longer to run. I've found
-# that doing 100000 iterations generally allows all models to converge - doing
-# 10000 generally isn't enough.
+# that doing 100000 iterations generally allows all the models to converge -
+# doing 10000 generally isn't quite enough.
 
 # 'Thinning_Rate = 1' describes how many iterations of the Markov chain Monte
 # Carlo simulation are performed per stored value. The default is '1'. For
