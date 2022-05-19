@@ -35,8 +35,8 @@
 # Some day I may update it to be able to account for multiple predictor
 # variables.
 
-# I took an outstanding course in Bayesian statistics with Dr. Remington Moll
-# at the University of New Hampshire that helped me write this function.
+# I took an outstanding Bayesian statistics course with Remington Moll at the
+# University of New Hampshire that helped me write this function.
 
 # This function takes 8 arguments. The first two are required.
 
