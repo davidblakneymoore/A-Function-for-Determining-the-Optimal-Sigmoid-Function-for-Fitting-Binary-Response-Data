@@ -716,7 +716,7 @@ Data_Frame <- data.frame(Predictor_Variable = Predictor_Variable, Response_Varia
 # 
 # 
 # Function Output:
-#   
+# 
 # $Logistic_Function_Model
 # $Logistic_Function_Model$Model_Name
 # [1] "Logistic Function"
