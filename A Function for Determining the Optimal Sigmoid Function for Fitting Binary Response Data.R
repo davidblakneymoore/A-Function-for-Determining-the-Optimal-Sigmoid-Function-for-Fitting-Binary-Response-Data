@@ -93,8 +93,9 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
       stop ("'Data_Frame' must be of class 'data.frame'.")
     }
     Data_Frame <- Data_Frame[, c(Predictor_Name, Response_Name)]
+    colnames(Data_Frame) <- c("Predictor", "Response")
   } else if (missing(Data_Frame)) {
-    Data_Frame <- data.frame(Predictor = Predictor, Response = Response)
+    Data_Frame <- data.frame(Predictor, Response)
   }
   Predictor <- Data_Frame$Predictor
   Response <- Data_Frame$Response
