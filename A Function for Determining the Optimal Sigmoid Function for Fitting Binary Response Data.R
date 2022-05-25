@@ -139,7 +139,7 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   
   # Response = (1 / (1 + exp(-(Intercept + (Slope * Predictor)))))
   
-  cat("\nLogistic Function Model\n\n")
+  cat("\nLogistic Function Model (one of ten)\n\n")
   Logistic_Function_Model_Name <- "Logistic Function"
   Lowercase_Logistic_Function_Model_Name <- "logistic function"
   sink("Logistic Function Model.txt")
@@ -177,7 +177,7 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   
   # Response = ((0.5 * tanh(Intercept + (Slope * Predictor))) + 0.5)
   
-  cat("\n\nHyperbolic Tangent Model\n\n")
+  cat("\n\nHyperbolic Tangent Model (two of ten)\n\n")
   Hyperbolic_Tangent_Model_Name <- "Hyperbolic Tangent"
   Lowercase_Hyperbolic_Tangent_Model_Name <- "hyperbolic tangent"
   sink("Hyperbolic Tangent Model.txt")
@@ -215,7 +215,7 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   
   # Response = ((0.5 * ((2 / pi) * atan((pi / 2) * (Intercept + (Slope * Predictor))))) + 0.5)
   
-  cat("\n\nArctangent Function Model\n\n")
+  cat("\n\nArctangent Function Model (three of ten)\n\n")
   Arctangent_Function_Model_Name <- "Arctangent Function"
   Lowercase_Arctangent_Function_Model_Name <- "arctangent function"
   sink("Arctangent Function Model.txt")
@@ -254,7 +254,7 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   
   # Response = ((2 / pi) * atan(tanh((Intercept + (Slope * Predictor)) * pi / 4)) + 0.5)
   
-  cat("\n\nGudermannian Function Model\n\n")
+  cat("\n\nGudermannian Function Model (four of ten)\n\n")
   Gudermannian_Function_Model_Name <- "Gudermannian Function"
   Lowercase_Gudermannian_Function_Model_Name <- "Gudermannian function"
   sink("Gudermannian Function Model.txt")
@@ -293,7 +293,7 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   
   # Response = ((0.5 * ((2 * pnorm((Intercept + (Slope * Predictor)) * sqrt(2), 0, 1)) - 1)) + 0.5)
   
-  cat("\n\nError Function Model\n\n")
+  cat("\n\nError Function Model (five of ten)\n\n")
   Error_Function_Model_Name <- "Error Function"
   Lowercase_Error_Function_Model_Name <- "error function"
   sink("Error Function Model.txt")
@@ -332,7 +332,7 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   
   # Response = ((1 + exp(-(Intercept + (Slope * Predictor)))) ^ (-Exponent))
   
-  cat("\n\nGeneralised Logistic Function Model\n\n")
+  cat("\n\nGeneralised Logistic Function Model (six of ten)\n\n")
   Generalised_Logistic_Function_Model_Name <- "Generalised Logistic Function"
   Lowercase_Generalised_Logistic_Function_Model_Name <- "generalised logistic function"
   sink("Generalised Logistic Function Model.txt")
@@ -371,7 +371,7 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   
   # Response = ((0.5 * ((Intercept + (Slope * Predictor)) / sqrt(1 + ((Intercept + (Slope * Predictor)) ^ 2)))) + 0.5)
   
-  cat("\n\nAlgebraic Function Model\n\n")
+  cat("\n\nAlgebraic Function Model (seven of ten)\n\n")
   Algebraic_Function_Model_Name <- "Algebraic Function"
   Lowercase_Algebraic_Function_Model_Name <- "algebraic function"
   sink("Algebraic Function Model.txt")
@@ -409,7 +409,7 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   
   # Response = ((0.5 * ((Intercept + (Slope * Predictor)) / ((1 + (abs(Intercept + (Slope * Predictor)) ^ Exponent)) ^ (1 / Exponent)))) + 0.5)
   
-  cat("\n\nA More General Algebraic Function Model\n\n")
+  cat("\n\nA More General Algebraic Function Model (eight of ten)\n\n")
   A_More_General_Algebraic_Function_Model_Name <- "A More General Algebraic Function"
   Lowercase_A_More_General_Algebraic_Function_Model_Name <- "a more general algebraic function"
   sink("A More General Algebraic Function Model.txt")
@@ -448,7 +448,7 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   
   # Response = (exp(-exp(Intercept + (Slope * Predictor))))
   
-  cat("\n\nGompertz Function Model\n\n")
+  cat("\n\nGompertz Function Model (nine of ten)\n\n")
   Gompertz_Function_Model_Name <- "Gompertz Function"
   Lowercase_Gompertz_Function_Model_Name <- "Gompertz function"
   sink("Gompertz Function Model.txt")
@@ -486,7 +486,7 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   
   # Response = (1 - (exp(-exp(Intercept + (Slope * Predictor)))))
   
-  cat("\n\nRotated Gompertz Function Model\n\n")
+  cat("\n\nRotated Gompertz Function Model (ten of ten)\n\n")
   Rotated_Gompertz_Function_Model_Name <- "Rotated Gompertz Function"
   Lowercase_Rotated_Gompertz_Function_Model_Name <- "rotated Gompertz function"
   sink("Rotated Gompertz Function Model.txt")
@@ -527,18 +527,20 @@ Function_for_Fitting_an_Optimal_Sigmoid_Model <- function (Predictor, Response, 
   
   # Returning the Pertinent Model Information
   
+  Bayesian_Model_Metadata <- data.frame(Number_of_Iterations = Number_of_Iterations, Thinning_Rate = Thinning_Rate, Burn_in_Value = Burn_in_Value, Number_of_Chains = Number_of_Chains)
   Pertinent_Model_Information_List <- lapply(Model_List, function (x) {
     list(Model_Name = x$Model_Name, Model = x$Model, Fitted_Values = data.frame(Predictor = Fitted_Predictor_Values, Response = x$Fitted_Response_Values), Residual_Sum_of_Squares = x$Residual_Sum_of_Squares, Pseudo_R_Squared = x$Pseudo_R_Squared, Output = x$Output$BUGSoutput$summary)
   })
-  Pertinent_Model_Information_List <- list(Model_Information = Pertinent_Model_Information_List, Conclusion = paste0("The model that best fits the data is the ", unlist(sapply(Model_List, `[`, 'Lowercase_Model_Name'))[which.max(unlist(sapply(Model_List, `[`, 'Pseudo_R_Squared')))], " model."))
+  Conclusion <- paste0("The model that best fits the data is the ", unlist(sapply(Model_List, `[`, 'Lowercase_Model_Name'))[which.max(unlist(sapply(Model_List, `[`, 'Pseudo_R_Squared')))], " model.")
+  Pertinent_Model_Information_List <- list(Bayesian_Model_Metadata = Bayesian_Model_Metadata, Model_Information = Pertinent_Model_Information_List, Conclusion = Conclusion)
   class(Pertinent_Model_Information_List) <- "Custom_Class"
-  cat("\n\nFunction Output:\n\n")
   return (Pertinent_Model_Information_List)
-  
+
 }
 
 print.Custom_Class <- function (x) {
-  print(c(lapply(Function_Output$Model_Information, `[`, c('Model_Name', 'Model', 'Residual_Sum_of_Squares', 'Pseudo_R_Squared', 'Output')), Conclusion = x$Conclusion))
+  cat("Function Output:\n\n")
+  print(list(Bayesian_Model_Metadata = as.data.frame(x$Bayesian_Model_Metadata), Model_Information = lapply(Function_Output$Model_Information, `[`, c('Model_Name', 'Model', 'Residual_Sum_of_Squares', 'Pseudo_R_Squared', 'Output')), Conclusion = x$Conclusion))
 }
 
 
@@ -559,9 +561,11 @@ Data_Frame <- data.frame(Predictor_Variable = Predictor_Variable, Response_Varia
 
 # Here's the output from the preceding line of code.
 
+# Be patient - it may take a while.
+
 # > (Function_Output <- Function_for_Fitting_an_Optimal_Sigmoid_Model(Predictor_Variable, Response_Variable, Data_Frame))
 # 
-# Logistic Function Model
+# Logistic Function Model (one of ten)
 # 
 # Compiling model graph
 # Resolving undeclared variables
@@ -577,7 +581,7 @@ Data_Frame <- data.frame(Predictor_Variable = Predictor_Variable, Response_Varia
 # |**************************************************| 100%
 # 
 # 
-# Hyperbolic Tangent Model
+# Hyperbolic Tangent Model (two of ten)
 # 
 # Compiling model graph
 # Resolving undeclared variables
@@ -593,7 +597,7 @@ Data_Frame <- data.frame(Predictor_Variable = Predictor_Variable, Response_Varia
 # |**************************************************| 100%
 # 
 # 
-# Arctangent Function Model
+# Arctangent Function Model (three of ten)
 # 
 # Compiling model graph
 # Resolving undeclared variables
@@ -609,7 +613,7 @@ Data_Frame <- data.frame(Predictor_Variable = Predictor_Variable, Response_Varia
 # |**************************************************| 100%
 # 
 # 
-# Gudermannian Function Model
+# Gudermannian Function Model (four of ten)
 # 
 # Compiling model graph
 # Resolving undeclared variables
@@ -625,7 +629,7 @@ Data_Frame <- data.frame(Predictor_Variable = Predictor_Variable, Response_Varia
 # |**************************************************| 100%
 # 
 # 
-# Error Function Model
+# Error Function Model (five of ten)
 # 
 # Compiling model graph
 # Resolving undeclared variables
@@ -641,7 +645,7 @@ Data_Frame <- data.frame(Predictor_Variable = Predictor_Variable, Response_Varia
 # |**************************************************| 100%
 # 
 # 
-# Generalised Logistic Function Model
+# Generalised Logistic Function Model (six of ten)
 # 
 # Compiling model graph
 # Resolving undeclared variables
@@ -657,7 +661,7 @@ Data_Frame <- data.frame(Predictor_Variable = Predictor_Variable, Response_Varia
 # |**************************************************| 100%
 # 
 # 
-# Algebraic Function Model
+# Algebraic Function Model (seven of ten)
 # 
 # Compiling model graph
 # Resolving undeclared variables
@@ -673,7 +677,7 @@ Data_Frame <- data.frame(Predictor_Variable = Predictor_Variable, Response_Varia
 # |**************************************************| 100%
 # 
 # 
-# A More General Algebraic Function Model
+# A More General Algebraic Function Model (eight of ten)
 # 
 # Compiling model graph
 # Resolving undeclared variables
@@ -689,7 +693,7 @@ Data_Frame <- data.frame(Predictor_Variable = Predictor_Variable, Response_Varia
 # |**************************************************| 100%
 # 
 # 
-# Gompertz Function Model
+# Gompertz Function Model (nine of ten)
 # 
 # Compiling model graph
 # Resolving undeclared variables
@@ -705,7 +709,7 @@ Data_Frame <- data.frame(Predictor_Variable = Predictor_Variable, Response_Varia
 # |**************************************************| 100%
 # 
 # 
-# Rotated Gompertz Function Model
+# Rotated Gompertz Function Model (ten of ten)
 # 
 # Compiling model graph
 # Resolving undeclared variables
@@ -719,224 +723,228 @@ Data_Frame <- data.frame(Predictor_Variable = Predictor_Variable, Response_Varia
 # 
 # |++++++++++++++++++++++++++++++++++++++++++++++++++| 100%
 # |**************************************************| 100%
-# 
-# 
 # Function Output:
+#   
+# $Bayesian_Model_Metadata
+#   Number_of_Iterations Thinning_Rate Burn_in_Value Number_of_Chains
+# 1                1e+05             1          1000                3
 # 
-# $Logistic_Function_Model
-# $Logistic_Function_Model$Model_Name
+# $Model_Information
+# $Model_Information$Logistic_Function_Model
+# $Model_Information$Logistic_Function_Model$Model_Name
 # [1] "Logistic Function"
 # 
-# $Logistic_Function_Model$Model
-# [1] "Response_Variable = (1 / (1 + exp(-(-2.33644903978487 + (0.186481072480213 * Predictor_Variable)))))"
+# $Model_Information$Logistic_Function_Model$Model
+# [1] "Response_Variable = (1 / (1 + exp(-(-2.81744169092709 + (0.274935457509424 * Predictor_Variable)))))"
 # 
-# $Logistic_Function_Model$Residual_Sum_of_Squares
-# [1] 18.85
+# $Model_Information$Logistic_Function_Model$Residual_Sum_of_Squares
+# [1] 14.75785
 # 
-# $Logistic_Function_Model$Pseudo_R_Squared
-# [1] 0.2456983
+# $Model_Information$Logistic_Function_Model$Pseudo_R_Squared
+# [1] 0.409686
 # 
-# $Logistic_Function_Model$Output
-#                         mean         sd       2.5%         25%         50%         75%       97.5%     Rhat  n.eff
-# Bayesian_p_Value   0.4396061 0.49634001   0.000000   0.0000000   0.0000000   1.0000000   1.0000000 1.000996 300000
-# Intercept         -2.3364490 0.65441211  -3.813642  -2.7056482  -2.2661864  -1.8854810  -1.2684210 1.001025  64000
-# Slope              0.1864811 0.04973225   0.106909   0.1522776   0.1807865   0.2138063   0.2999475 1.001004 200000
-# deviance         120.0063385 2.74402837 116.918649 118.0225725 119.2915799 121.2159109 127.1293145 1.001121  16000
+# $Model_Information$Logistic_Function_Model$Output
+#                        mean         sd       2.5%        25%        50%        75%       97.5%     Rhat  n.eff
+# Bayesian_p_Value  0.5071481 0.49994974  0.0000000  0.0000000  1.0000000  1.0000000   1.0000000 1.001007 150000
+# Intercept        -2.8174417 0.69815460 -4.4291302 -3.1778472 -2.7277689 -2.3468186  -1.7418191 1.001029  57000
+# Slope             0.2749355 0.07265096  0.1712537  0.2268861  0.2636905  0.3089492   0.4460152 1.001013 100000
+# deviance         95.4566008 2.84447886 92.2966183 93.4139409 94.6995766 96.6833949 102.8879521 1.001076  24000
 # 
 # 
-# $Hyperbolic_Tangent_Model
-# $Hyperbolic_Tangent_Model$Model_Name
+# $Model_Information$Hyperbolic_Tangent_Model
+# $Model_Information$Hyperbolic_Tangent_Model$Model_Name
 # [1] "Hyperbolic Tangent"
 # 
-# $Hyperbolic_Tangent_Model$Model
-# [1] "Response_Variable = ((0.5 * tanh(-1.16798978417337 + (0.0931924756513314 * Predictor_Variable))) + 0.5)"
+# $Model_Information$Hyperbolic_Tangent_Model$Model
+# [1] "Response_Variable = ((0.5 * tanh(-1.41260228908666 + (0.137874943502405 * Predictor_Variable))) + 0.5)"
 # 
-# $Hyperbolic_Tangent_Model$Residual_Sum_of_Squares
-# [1] 18.84958
+# $Model_Information$Hyperbolic_Tangent_Model$Residual_Sum_of_Squares
+# [1] 14.7604
 # 
-# $Hyperbolic_Tangent_Model$Pseudo_R_Squared
-# [1] 0.2457152
+# $Model_Information$Hyperbolic_Tangent_Model$Pseudo_R_Squared
+# [1] 0.409584
 # 
-# $Hyperbolic_Tangent_Model$Output
-#                          mean         sd         2.5%          25%          50%         75%       97.5%     Rhat n.eff
-# Bayesian_p_Value   0.43967340 0.49634820   0.00000000   0.00000000   0.00000000   1.0000000   1.0000000 1.001110 17000
-# Intercept         -1.16798978 0.32656904  -1.91258496  -1.35089897  -1.13239786  -0.9441194  -0.6302550 1.001457  4300
-# Slope              0.09319248 0.02478972   0.05318255   0.07623067   0.09030607   0.1067146   0.1500693 1.001377  5200
-# deviance         120.00271230 2.74062447 116.91427815 118.01306229 119.28504546 121.2293770 127.0787605 1.001111 17000
+# $Model_Information$Hyperbolic_Tangent_Model$Output
+#                        mean         sd        2.5%        25%        50%        75%       97.5%     Rhat  n.eff
+# Bayesian_p_Value  0.5030640 0.49999145  0.00000000  0.0000000  1.0000000  1.0000000   1.0000000 1.001018  82000
+# Intercept        -1.4126023 0.35093525 -2.21472320 -1.5939652 -1.3663596 -1.1759539  -0.8726282 1.000994 300000
+# Slope             0.1378749 0.03656028  0.08567786  0.1136327  0.1321272  0.1550594   0.2231141 1.000997 300000
+# deviance         95.4761647 2.84236025 92.29904958 93.4219004 94.7320377 96.7283843 102.8516734 1.001005 180000
 # 
 # 
-# $Arctangent_Function_Model
-# $Arctangent_Function_Model$Model_Name
+# $Model_Information$Arctangent_Function_Model
+# $Model_Information$Arctangent_Function_Model$Model_Name
 # [1] "Arctangent Function"
 # 
-# $Arctangent_Function_Model$Model
-# [1] "Response_Variable = ((0.5 * ((2 / pi) * atan((pi / 2) * (-1.51767318209146 + (0.123473532957025 * Predictor_Variable))))) + 0.5)"
+# $Model_Information$Arctangent_Function_Model$Model
+# [1] "Response_Variable = ((0.5 * ((2 / pi) * atan((pi / 2) * (-2.00777773926134 + (0.206495998490139 * Predictor_Variable))))) + 0.5)"
 # 
-# $Arctangent_Function_Model$Residual_Sum_of_Squares
-# [1] 19.13632
+# $Model_Information$Arctangent_Function_Model$Residual_Sum_of_Squares
+# [1] 15.17498
 # 
-# $Arctangent_Function_Model$Pseudo_R_Squared
-# [1] 0.2342411
+# $Model_Information$Arctangent_Function_Model$Pseudo_R_Squared
+# [1] 0.3930009
 # 
-# $Arctangent_Function_Model$Output
-#                         mean         sd         2.5%          25%         50%         75%       97.5%     Rhat  n.eff
-# Bayesian_p_Value   0.4296936 0.49503317   0.00000000   0.00000000   0.0000000   1.0000000   1.0000000 1.000994 300000
-# Intercept         -1.5176732 0.57344177  -2.90463611  -1.78850939  -1.4207121  -1.1301310  -0.7090572 1.000998 300000
-# Slope              0.1234735 0.04668362   0.05968212   0.09216846   0.1150764   0.1447289   0.2367473 1.000994 300000
-# deviance         121.3204955 2.97635880 117.98505996 119.16693135 120.5409938 122.6270708 129.1343053 1.001046  38000
+# $Model_Information$Arctangent_Function_Model$Output
+#                        mean         sd       2.5%        25%       50%        75%       97.5%     Rhat n.eff
+# Bayesian_p_Value  0.5356902 0.49872542  0.0000000  0.0000000  1.000000  1.0000000   1.0000000 1.001024 65000
+# Intercept        -2.0077777 0.76749187 -3.8213449 -2.3192721 -1.865930 -1.5163508  -1.0369052 1.008910 13000
+# Slope             0.2064960 0.08476862  0.1042556  0.1525072  0.189558  0.2392372   0.4088162 1.001027 59000
+# deviance         98.0238215 3.04652662 94.6346365 95.8355518 97.227267 99.3459547 105.8408624 1.001124 15000
 # 
 # 
-# $Gudermannian_Function_Model
-# $Gudermannian_Function_Model$Model_Name
+# $Model_Information$Gudermannian_Function_Model
+# $Model_Information$Gudermannian_Function_Model$Model_Name
 # [1] "Gudermannian Function"
 # 
-# $Gudermannian_Function_Model$Model
-# [1] "Response_Variable = ((2 / pi) * atan(tanh((-1.20805893114019 + (0.0966429878324961 * Predictor_Variable)) * pi / 4)) + 0.5)"
+# $Model_Information$Gudermannian_Function_Model$Model
+# [1] "Response_Variable = ((2 / pi) * atan(tanh((-1.47871602047179 + (0.145382457052783 * Predictor_Variable)) * pi / 4)) + 0.5)"
 # 
-# $Gudermannian_Function_Model$Residual_Sum_of_Squares
-# [1] 18.88393
+# $Model_Information$Gudermannian_Function_Model$Residual_Sum_of_Squares
+# [1] 14.81049
 # 
-# $Gudermannian_Function_Model$Pseudo_R_Squared
-# [1] 0.2443404
+# $Model_Information$Gudermannian_Function_Model$Pseudo_R_Squared
+# [1] 0.4075805
 # 
-# $Gudermannian_Function_Model$Output
-#                          mean         sd         2.5%          25%          50%         75%       97.5%     Rhat n.eff
-# Bayesian_p_Value   0.43988215 0.49637352   0.00000000   0.00000000   0.00000000   1.0000000   1.0000000 1.001053 33000
-# Intercept         -1.20805893 0.34776920  -2.00090330  -1.40100863  -1.16870193  -0.9696084  -0.6451038 1.001270  7200
-# Slope              0.09664299 0.02664765   0.05434613   0.07839391   0.09340856   0.1110425   0.1580554 1.001196  9900
-# deviance         120.14978269 2.76001653 117.06630765 118.15899834 119.42265263 121.3555495 127.3595701 1.001278  7000
+# $Model_Information$Gudermannian_Function_Model$Output
+#                        mean         sd        2.5%        25%       50%       75%       97.5%     Rhat  n.eff
+# Bayesian_p_Value  0.5070000 0.49995184  0.00000000  0.0000000  1.000000  1.000000   1.0000000 1.000999 300000
+# Intercept        -1.4787160 0.38621952 -2.37670304 -1.6719220 -1.424739 -1.218852  -0.8971377 1.001050  35000
+# Slope             0.1453825 0.04059272  0.08837514  0.1185286  0.138724  0.163878   0.2420987 1.001021  74000
+# deviance         95.7953553 2.88199089 92.59715219 93.7294556 95.030988 97.038412 103.3253803 1.001074  25000
 # 
 # 
-# $Error_Function_Model_Information
-# $Error_Function_Model_Information$Model_Name
+# $Model_Information$Error_Function_Model_Information
+# $Model_Information$Error_Function_Model_Information$Model_Name
 # [1] "Error Function"
 # 
-# $Error_Function_Model_Information$Model
-# [1] "Response_Variable = ((0.5 * ((2 * pnorm((-0.991378525508604 + (0.0789711310566494 * Predictor_Variable)) * sqrt(2))) - 1)) + 0.5)"
+# $Model_Information$Error_Function_Model_Information$Model
+# [1] "Response_Variable = ((0.5 * ((2 * pnorm((-1.18986143065775 + (0.114991993224239 * Predictor_Variable)) * sqrt(2))) - 1)) + 0.5)"
 # 
-# $Error_Function_Model_Information$Residual_Sum_of_Squares
-# [1] 18.80415
+# $Model_Information$Error_Function_Model_Information$Residual_Sum_of_Squares
+# [1] 14.69599
 # 
-# $Error_Function_Model_Information$Pseudo_R_Squared
-# [1] 0.2475332
+# $Model_Information$Error_Function_Model_Information$Pseudo_R_Squared
+# [1] 0.4121605
 # 
-# $Error_Function_Model_Information$Output
-#                          mean         sd         2.5%          25%          50%          75%       97.5%     Rhat  n.eff
-# Bayesian_p_Value   0.44330640 0.49677627   0.00000000   0.00000000   0.00000000   1.00000000   1.0000000 1.000997 300000
-# Intercept         -0.99137853 0.26540684  -1.58289988  -1.14226200  -0.96597784  -0.80892560  -0.5498642 1.000995 300000
-# Slope              0.07897113 0.01992914   0.04633745   0.06535553   0.07686405   0.09015762   0.1236903 1.001003 200000
-# deviance         119.79883423 2.72879377 116.73696381 117.82682949 119.08605745 121.00649886 126.8836311 1.001063  29000
+# $Model_Information$Error_Function_Model_Information$Output
+#                       mean         sd        2.5%         25%        50%        75%       97.5%     Rhat  n.eff
+# Bayesian_p_Value  0.488734 0.49987390  0.00000000  0.00000000  0.0000000  1.0000000   1.0000000 1.001005 170000
+# Intercept        -1.189861 0.27208625 -1.81531795 -1.33843350 -1.1576538 -1.0033992  -0.7528651 1.001053  34000
+# Slope             0.114992 0.02755671  0.07372324  0.09638159  0.1109226  0.1287157   0.1802113 1.001041  42000
+# deviance         95.065747 2.79024700 91.92577699 93.03764109 94.3278866 96.3037426 102.3468686 1.001016  87000
 # 
 # 
-# $Generalised_Logistic_Function_Model
-# $Generalised_Logistic_Function_Model$Model_Name
+# $Model_Information$Generalised_Logistic_Function_Model
+# $Model_Information$Generalised_Logistic_Function_Model$Model_Name
 # [1] "Generalised Logistic Function"
 # 
-# $Generalised_Logistic_Function_Model$Model
-# [1] "Response_Variable = ((1 + exp(-(-8.32268644149368 + (0.415027012251236 * Predictor_Variable)))) ^ (-0.776179983894283))"
+# $Model_Information$Generalised_Logistic_Function_Model$Model
+# [1] "Response_Variable = ((1 + exp(-(-4.93899228383167 + (0.387509734150288 * Predictor_Variable)))) ^ (-1.57180824990506))"
 # 
-# $Generalised_Logistic_Function_Model$Residual_Sum_of_Squares
-# [1] 27.04924
+# $Model_Information$Generalised_Logistic_Function_Model$Residual_Sum_of_Squares
+# [1] 19.61971
 # 
-# $Generalised_Logistic_Function_Model$Pseudo_R_Squared
-# [1] -0.08240268
+# $Model_Information$Generalised_Logistic_Function_Model$Pseudo_R_Squared
+# [1] 0.2152115
 # 
-# $Generalised_Logistic_Function_Model$Output
-#                         mean        sd         2.5%         25%         50%         75%       97.5%     Rhat n.eff
-# Bayesian_p_Value   0.4532727 0.4978126   0.00000000   0.0000000   0.0000000   1.0000000   1.0000000 1.001096 19000
-# Exponent           0.7761800 1.3599120   0.05865472   0.1637466   0.3666564   0.8459431   3.8686341 1.006814   350
-# Intercept         -8.3226864 8.1000283 -30.45132278 -11.5134493  -5.5476127  -2.6700360   0.0374854 1.016070   250
-# Slope              0.4150270 0.3303920   0.11180621   0.1915711   0.2920673   0.5243842   1.3433115 1.008908   280
-# deviance         120.2631854 2.7646594 117.11119765 118.2728544 119.5540138 121.4862702 127.4287175 1.001192 10000
+# $Model_Information$Generalised_Logistic_Function_Model$Output
+#                        mean        sd         2.5%        25%        50%       75%       97.5%     Rhat n.eff
+# Bayesian_p_Value  0.4952626 0.4999784   0.00000000  0.0000000  0.0000000  1.000000   1.0000000 1.001124 15000
+# Exponent          1.5718082 2.2002392   0.09084056  0.4084910  0.8812828  1.844186   7.5023393 1.001567  3500
+# Intercept        -4.9389923 6.2407231 -22.07698444 -5.8612255 -3.1188301 -1.544207   0.4251846 1.013605  8300
+# Slope             0.3875097 0.3203627   0.15552350  0.2251631  0.2889806  0.416420   1.2534394 1.001624  3200
+# deviance         96.0249069 3.1605804  91.73642531 93.7165998 95.4813900 97.612196 103.8355813 1.001552  3600
 # 
 # 
-# $Algebraic_Function_Model
-# $Algebraic_Function_Model$Model_Name
+# $Model_Information$Algebraic_Function_Model
+# $Model_Information$Algebraic_Function_Model$Model_Name
 # [1] "Algebraic Function"
 # 
-# $Algebraic_Function_Model$Model
-# [1] "Response_Variable = ((0.5 * ((-1.28228164399336 + (0.102990152273513 * Predictor_Variable)) / sqrt(1 + ((-1.28228164399336 + (0.102990152273513 * Predictor_Variable)) ^ 2)))) + 0.5)"
+# $Model_Information$Algebraic_Function_Model$Model
+# [1] "Response_Variable = ((0.5 * ((-1.60017751347136 + (0.159766973086163 * Predictor_Variable)) / sqrt(1 + ((-1.60017751347136 + (0.159766973086163 * Predictor_Variable)) ^ 2)))) + 0.5)"
 # 
-# $Algebraic_Function_Model$Residual_Sum_of_Squares
-# [1] 18.9553
+# $Model_Information$Algebraic_Function_Model$Residual_Sum_of_Squares
+# [1] 14.92225
 # 
-# $Algebraic_Function_Model$Pseudo_R_Squared
-# [1] 0.2414848
+# $Model_Information$Algebraic_Function_Model$Pseudo_R_Squared
+# [1] 0.40311
 # 
-# $Algebraic_Function_Model$Output
-#                         mean        sd         2.5%          25%          50%         75%       97.5%     Rhat  n.eff
-# Bayesian_p_Value   0.4381886 0.4961655   0.00000000   0.00000000   0.00000000   1.0000000   1.0000000 1.000998 300000
-# Intercept         -1.2822816 0.3985051  -2.21367787  -1.49430741  -1.22923782  -1.0091010  -0.6616935 1.001132  14000
-# Slope              0.1029902 0.0312075   0.05563512   0.08159677   0.09849964   0.1191179   0.1764576 1.001083  22000
-# deviance         120.4998280 2.8101698 117.33391496 118.45750900 119.76532190 121.7547884 127.7964876 1.001149  13000
+# $Model_Information$Algebraic_Function_Model$Output
+#                        mean         sd        2.5%        25%        50%       75%       97.5%     Rhat  n.eff
+# Bayesian_p_Value  0.5239865 0.49942516  0.00000000  0.0000000  1.0000000  1.000000   1.0000000 1.001043  40000
+# Intercept        -1.6001775 0.45644225 -2.71460620 -1.8254262 -1.5275838 -1.289088  -0.9276276 1.001159  12000
+# Slope             0.1597670 0.04914004  0.09193498  0.1265451  0.1507463  0.182149   0.2828056 1.001166  12000
+# deviance         96.4747196 2.88983017 93.21655464 94.3691383 95.7121345 97.760910 104.0761286 1.001001 260000
 # 
 # 
-# $A_More_General_Algebraic_Function_Model
-# $A_More_General_Algebraic_Function_Model$Model_Name
+# $Model_Information$A_More_General_Algebraic_Function_Model
+# $Model_Information$A_More_General_Algebraic_Function_Model$Model_Name
 # [1] "A More General Algebraic Function"
 # 
-# $A_More_General_Algebraic_Function_Model$Model
-# [1] "Response_Variable = ((0.5 * ((-33.1017585392326 + (3.17187376338609 * Predictor_Variable)) / ((1 + (abs(-33.1017585392326 + (3.17187376338609 * Predictor_Variable)) ^ 0.452356234695712)) ^ (1 / 0.452356234695712)))) + 0.5)"
+# $Model_Information$A_More_General_Algebraic_Function_Model$Model
+# [1] "Response_Variable = ((0.5 * ((-23.9765901206144 + (2.65596291237577 * Predictor_Variable)) / ((1 + (abs(-23.9765901206144 + (2.65596291237577 * Predictor_Variable)) ^ 0.83929451283207)) ^ (1 / 0.83929451283207)))) + 0.5)"
 # 
-# $A_More_General_Algebraic_Function_Model$Residual_Sum_of_Squares
-# [1] 20.32901
+# $Model_Information$A_More_General_Algebraic_Function_Model$Residual_Sum_of_Squares
+# [1] 17.97335
 # 
-# $A_More_General_Algebraic_Function_Model$Pseudo_R_Squared
-# [1] 0.1865141
+# $Model_Information$A_More_General_Algebraic_Function_Model$Pseudo_R_Squared
+# [1] 0.281066
 # 
-# $A_More_General_Algebraic_Function_Model$Output
-#                         mean         sd        2.5%        25%         50%         75%       97.5%     Rhat  n.eff
-# Bayesian_p_Value   0.5063872  0.4999600   0.0000000   0.000000   1.0000000   1.0000000   1.0000000 1.001030  54000
-# Exponent           0.4523562  0.3423357   0.2793075   0.348172   0.3944637   0.4587175   0.9507556 1.011761   1600
-# Intercept        -33.1017585 20.6821724 -79.6188051 -45.994569 -30.3923948 -17.2816329  -2.2224198 1.001913   2200
-# Slope              3.1718738  2.1443182   0.1884297   1.557175   2.8196605   4.3954504   8.1507183 1.002959   1800
-# deviance         124.1738211  2.6201282 120.8163535 122.485443 123.5674833 125.2809483 130.7915774 1.001727 300000
+# $Model_Information$A_More_General_Algebraic_Function_Model$Output
+#                         mean         sd        2.5%         25%         50%         75%      97.5%     Rhat  n.eff
+# Bayesian_p_Value   0.5791414  0.4936977   0.0000000   0.0000000   1.0000000   1.0000000   1.000000 1.001004 200000
+# Exponent           0.8392945  1.2636013   0.3558036   0.4416266   0.5184998   0.6973387   3.668798 1.013202    320
+# Intercept        -23.9765901 19.2978776 -68.0242038 -36.6986172 -20.1004834  -7.3295238  -1.153962 1.012830    260
+# Slope              2.6559629  2.2271423   0.1106941   0.7758893   2.1737194   4.0249643   7.872490 1.008056    290
+# deviance         102.1325543  3.6197620  93.7682184 100.4784282 102.2728905 104.1006202 109.399640 1.005364    520
 # 
 # 
-# $Gompertz_Function_Model
-# $Gompertz_Function_Model$Model_Name
+# $Model_Information$Gompertz_Function_Model
+# $Model_Information$Gompertz_Function_Model$Model_Name
 # [1] "Gompertz Function"
 # 
-# $Gompertz_Function_Model$Model
-# [1] "Response_Variable = (exp(-exp(1.17911288434877 + (-0.130132076554229 * Predictor_Variable))))"
+# $Model_Information$Gompertz_Function_Model$Model
+# [1] "Response_Variable = (exp(-exp(1.57659806974731 + (-0.20014343206286 * Predictor_Variable))))"
 # 
-# $Gompertz_Function_Model$Residual_Sum_of_Squares
-# [1] 18.82781
+# $Model_Information$Gompertz_Function_Model$Residual_Sum_of_Squares
+# [1] 14.569
 # 
-# $Gompertz_Function_Model$Pseudo_R_Squared
-# [1] 0.2465861
+# $Model_Information$Gompertz_Function_Model$Pseudo_R_Squared
+# [1] 0.4172402
 # 
-# $Gompertz_Function_Model$Output
-#                         mean         sd        2.5%         25%         50%         75%       97.5%     Rhat  n.eff
-# Bayesian_p_Value   0.4129293 0.49236116   0.0000000   0.0000000   0.0000000   1.0000000   1.0000000 1.001030  55000
-# Intercept          1.1791129 0.41164251   0.5046325   0.9000821   1.1342711   1.4054446   2.1154189 1.001025  64000
-# Slope             -0.1301321 0.03439938  -0.2089268  -0.1488089  -0.1260977  -0.1067671  -0.0748665 1.001023  67000
-# deviance         119.8812905 2.73266075 116.8042605 117.8977374 119.1696986 121.0907041 127.0207659 1.000998 300000
+# $Model_Information$Gompertz_Function_Model$Output
+#                        mean         sd       2.5%        25%        50%        75%       97.5%     Rhat  n.eff
+# Bayesian_p_Value  0.4568215 0.49813297  0.0000000  0.0000000  0.0000000  1.0000000   1.0000000 1.001112  17000
+# Intercept         1.5765981 0.47467326  0.8644013  1.2542606  1.5061923  1.8172120   2.6927280 1.001149  13000
+# Slope            -0.2001434 0.05324085 -0.3268541 -0.2250246 -0.1911818 -0.1646408  -0.1249099 1.001107  18000
+# deviance         94.1598982 2.87350983 90.9605163 92.0859205 93.4041617 95.4114713 101.6443834 1.001010 120000
 # 
 # 
-# $Rotated_Gompertz_Function_Model
-# $Rotated_Gompertz_Function_Model$Model_Name
+# $Model_Information$Rotated_Gompertz_Function_Model
+# $Model_Information$Rotated_Gompertz_Function_Model$Model_Name
 # [1] "Rotated Gompertz Function"
 # 
-# $Rotated_Gompertz_Function_Model$Model
-# [1] "Response_Variable = (1 - (exp(-exp(-2.04999535959946 + (0.12686703664502 * Predictor_Variable)))))"
+# $Model_Information$Rotated_Gompertz_Function_Model$Model
+# [1] "Response_Variable = (1 - (exp(-exp(-2.3549722339602 + (0.180805641514572 * Predictor_Variable)))))"
 # 
-# $Rotated_Gompertz_Function_Model$Residual_Sum_of_Squares
-# [1] 18.85588
+# $Model_Information$Rotated_Gompertz_Function_Model$Residual_Sum_of_Squares
+# [1] 14.95632
 # 
-# $Rotated_Gompertz_Function_Model$Pseudo_R_Squared
-# [1] 0.2454632
+# $Model_Information$Rotated_Gompertz_Function_Model$Pseudo_R_Squared
+# [1] 0.401747
 # 
-# $Rotated_Gompertz_Function_Model$Output
-#                         mean         sd         2.5%         25%         50%         75%       97.5%     Rhat n.eff
-# Bayesian_p_Value   0.4527542 0.49776367   0.00000000   0.0000000   0.0000000   1.0000000   1.0000000 1.001017 87000
-# Intercept         -2.0499954 0.47015846  -3.10114575  -2.3236138  -2.0040957  -1.7241739  -1.2609322 1.001087 21000
-# Slope              0.1268670 0.03184876   0.07418693   0.1049918   0.1236174   0.1448527   0.1985734 1.001074 25000
-# deviance         120.0744383 2.73859450 116.99208788 118.0875099 119.3619519 121.2891779 127.1699346 1.001061 30000
+# $Model_Information$Rotated_Gompertz_Function_Model$Output
+#                        mean         sd       2.5%        25%        50%        75%       97.5%     Rhat n.eff
+# Bayesian_p_Value  0.4930000 0.49995184  0.0000000  0.0000000  0.0000000  1.0000000   1.0000000 1.001055 33000
+# Intercept        -2.3549722 0.50367745 -3.5072962 -2.6176403 -2.2918178 -2.0146593  -1.5730672 1.001351  5600
+# Slope             0.1808056 0.04748051  0.1139822  0.1498772  0.1734703  0.2020339   0.2927681 1.001313  6300
+# deviance         96.8267193 2.90793260 93.6085590 94.7305963 96.0509754 98.0798653 104.4973258 1.001061 30000
+# 
 # 
 # 
 # $Conclusion
-# [1] "The model that best fits the data is the error function model."
+# [1] "The model that best fits the data is the Gompertz function model."
 
 
 # Generating a Plot of All the Models
