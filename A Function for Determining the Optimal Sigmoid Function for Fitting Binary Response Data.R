@@ -20,7 +20,7 @@
 # after it has been rotated by 180 degrees. All ten of these functions have
 # been rescaled so that they are bounded by 0 and 1 on the response variable
 # axis. Please note that the Gompertz function and the rotated Gompertz
-# function are the only functions out of the ten that are not radially
+# function are the only functions out of the ten that are not rotationally
 # symmetric about their inflection points - one side of these functions
 # approaches the asymptote more gradually than the other.
 
