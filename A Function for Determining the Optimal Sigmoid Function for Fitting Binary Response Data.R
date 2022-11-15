@@ -24,6 +24,11 @@
 # symmetric about their inflection points - one side of these functions
 # approaches the asymptote more gradually than the other.
 
+# This function can also handle numeric response variables that are bounded by
+# 0 and 1 - response variables don't necessarily have to be binary. Similarly,
+# it can also handle percents if percents are first converted to fractions
+# between 0 and 1 (inclusive).
+
 # This function uses the 'R2jags' package heavily and it returns all the
 # pertinent information for each model. For each model, it returns the model
 # name, the actual model (with the parameters that best fit the data included),
